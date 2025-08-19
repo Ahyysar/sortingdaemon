@@ -15,6 +15,8 @@ import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 public class SortingDaemonClient implements ClientModInitializer {
     public static final String MODID = "sortingdaemon";
     private static final Logger LOG = LoggerFactory.getLogger(MODID);
@@ -22,7 +24,7 @@ public class SortingDaemonClient implements ClientModInitializer {
     private static KeyBinding sortKeyPrimary; // по умолчанию СКМ
     private static KeyBinding sortKeyAlt;     // по умолчанию G
 
-    // Состояние для edge-detect’а
+    // edge-detect
     private static boolean primaryWasDown = false;
     private static boolean altWasDown = false;
 
@@ -43,71 +45,66 @@ public class SortingDaemonClient implements ClientModInitializer {
         ));
 
         LOG.info("Primary key registered: {}", sortKeyPrimary.getBoundKeyTranslationKey());
-        LOG.info("Alt key registered: {}", sortKeyAlt.getBoundKeyTranslationKey());
+        LOG.info("Alt  key registered: {}", sortKeyAlt.getBoundKeyTranslationKey());
         LOG.info("SortingDaemon loaded; keybinds registered.");
 
-        // Используем START_CLIENT_TICK и опрашиваем GLFW напрямую по типу bound key
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             if (client == null) return;
 
             final long win = client.getWindow().getHandle();
 
-            // читаем фактически назначенные клавиши
+            // читаем назначенные клавиши (через translation key)
             final InputUtil.Key pKey = InputUtil.fromTranslationKey(sortKeyPrimary.getBoundKeyTranslationKey());
             final InputUtil.Key aKey = InputUtil.fromTranslationKey(sortKeyAlt.getBoundKeyTranslationKey());
 
+            boolean primaryDownNow = isKeyDown(win, pKey);
+            boolean altDownNow     = isKeyDown(win, aKey);
 
-            // текущее «нажато/нет» с учётом типа (мышь/клава)
-            boolean primaryDownNow = isKeyCurrentlyDown(win, pKey);
-            boolean altDownNow     = isKeyCurrentlyDown(win, aKey);
-
-            // триггеры нажатий (up -> down)
             boolean primaryPressed = primaryDownNow && !primaryWasDown;
             boolean altPressed     = altDownNow && !altWasDown;
 
             primaryWasDown = primaryDownNow;
             altWasDown     = altDownNow;
 
-            // работать только когда открыт контейнер
-            if (client.currentScreen instanceof HandledScreen<?> screen) {
+            if (!(client.currentScreen instanceof HandledScreen<?> screen)) {
                 if (primaryPressed || altPressed) {
-                    var handler = screen.getScreenHandler();
-                    var range   = InventoryRangeResolver.resolve(handler);
+                    LOG.info("[SortingDaemon] Sort pressed but no HandledScreen open");
+                }
+                return;
+            }
 
-                    LOG.info("[SortingDaemon] Triggered in {} slots={} range=[{}..{})",
-                            screen.getClass().getSimpleName(),
-                            handler.slots.size(),
-                            range.startInclusive(),
-                            range.endExclusive());
+            // 🔒 Блокируем креативный «каталог всех предметов»
+            String screenClass = screen.getClass().getName();
+            if (screenClass.contains("CreativeInventoryScreen")) {
+                // В креативе не трогаем, иначе ломается виртуальный список предметов
+                if (primaryPressed || altPressed) {
+                    LOG.info("[SortingDaemon] Ignored on CreativeInventoryScreen");
+                }
+                return;
+            }
 
-                    Sorter.sortCurrent(client, handler, range);
+            if (primaryPressed || altPressed) {
+                var handler = screen.getScreenHandler();
+                List<Integer> ids = InventoryRangeResolver.resolveSlotIndices(handler);
 
+                LOG.info("[SortingDaemon] Triggered in {} slots={} picked={}",
+                        screen.getClass().getSimpleName(), handler.slots.size(), ids.size());
+
+                if (!ids.isEmpty()) {
+                    Sorter.sortCurrent(client, handler, ids);
                     if (client.player != null) {
                         client.player.sendMessage(Text.literal("[SortingDaemon] Sorting…"), true);
                     }
-                }
-            } else {
-                if (primaryPressed || altPressed) {
-                    LOG.info("[SortingDaemon] Sort pressed but no HandledScreen open");
                 }
             }
         });
     }
 
-    // Правильный опрос: мышь -> glfwGetMouseButton, клавиатура -> glfwGetKey
-    private static boolean isKeyCurrentlyDown(long windowHandle, InputUtil.Key key) {
-        switch (key.getCategory()) {
-            case MOUSE -> {
-                // код мыши — это GLFW_MOUSE_BUTTON_*
-                return GLFW.glfwGetMouseButton(windowHandle, key.getCode()) == GLFW.GLFW_PRESS;
-            }
-            case KEYSYM, SCANCODE -> {
-                // код клавиши — это GLFW_KEY_*
-                return GLFW.glfwGetKey(windowHandle, key.getCode()) == GLFW.GLFW_PRESS;
-            }
-            default -> {
-                return false;
-            }
-        }
+    private static boolean isKeyDown(long win, InputUtil.Key key) {
+        return switch (key.getCategory()) {
+            case MOUSE -> GLFW.glfwGetMouseButton(win, key.getCode()) == GLFW.GLFW_PRESS;
+            case KEYSYM, SCANCODE -> GLFW.glfwGetKey(win, key.getCode()) == GLFW.GLFW_PRESS;
+            default -> false;
+        };
     }
 }
