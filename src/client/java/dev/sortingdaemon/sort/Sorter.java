@@ -8,27 +8,30 @@ import net.minecraft.screen.slot.SlotActionType;
 import java.util.*;
 
 public class Sorter {
-    public static void sortCurrent(MinecraftClient client, ScreenHandler sh, InventoryRangeResolver.Range range) {
+
+    public static void sortCurrent(MinecraftClient client, ScreenHandler sh, List<Integer> slotIds) {
+        if (slotIds == null || slotIds.size() <= 1) return;
+
         var slots = sh.slots;
 
-        List<Integer> ids = new ArrayList<>();
-        for (int i = range.startInclusive(); i < range.endExclusive(); i++) ids.add(i);
-        if (ids.size() <= 1) return;
+        // Текущие стаки (копии) из выбранных слотов
+        List<ItemStack> current = new ArrayList<>(slotIds.size());
+        for (int id : slotIds) current.add(slots.get(id).getStack().copy());
 
-        List<ItemStack> current = new ArrayList<>(ids.size());
-        for (int id : ids) current.add(slots.get(id).getStack().copy());
-
-        // Упаковка и сортировка
+        // Упаковали и отсортировали
         List<ItemStack> packed = StackPacker.pack(current);
         packed.sort(Comparator
                 .comparing((ItemStack st) -> st.isEmpty() ? "" : st.getItem().toString())
                 .thenComparing(st -> st.isEmpty() ? "" : st.getName().getString())
                 .thenComparingInt(ItemStack::getDamage));
 
+        // добиваем пустыми до исходного размера
         while (packed.size() < current.size()) packed.add(ItemStack.EMPTY);
 
         int syncId = sh.syncId;
-        for (int i = 0; i < ids.size(); i++) {
+
+        // Применяем раскладку через «клики»
+        for (int i = 0; i < slotIds.size(); i++) {
             ItemStack want = packed.get(i);
             ItemStack has  = current.get(i);
             if (equalEnough(has, want)) continue;
@@ -36,20 +39,22 @@ public class Sorter {
             int src = findSource(current, want, i);
             if (src < 0) continue;
 
-            int srcSlot = ids.get(src);
-            int dstSlot = ids.get(i);
+            int srcSlot = slotIds.get(src);
+            int dstSlot = slotIds.get(i);
 
             clickPickup(client, syncId, srcSlot);
             clickPickup(client, syncId, dstSlot);
             if (!cursorEmpty(client)) clickPickup(client, syncId, srcSlot);
 
+            // локально обновляем картинку
             ItemStack tmp = current.get(src);
             current.set(src, current.get(i));
             current.set(i, tmp);
         }
 
+        // Сброс курсора, если что-то осталось
         if (!cursorEmpty(client)) {
-            for (int slot : ids) {
+            for (int slot : slotIds) {
                 clickPickup(client, syncId, slot);
                 if (cursorEmpty(client)) break;
             }
@@ -58,13 +63,10 @@ public class Sorter {
 
     // ----- helpers -----
 
-    // Аналог canCombine для 1.21.8
     private static boolean canStackTogether(ItemStack a, ItemStack b) {
         if (a.isEmpty() || b.isEmpty()) return false;
         if (!a.isStackable() || !b.isStackable()) return false;
         if (a.getItem() != b.getItem()) return false;
-        // Данные/компоненты (NBT/enchants/именованные и т.п.) должны совпадать
-        // В 1.21.x у стаков есть data components map:
         return Objects.equals(a.getComponents(), b.getComponents());
     }
 
