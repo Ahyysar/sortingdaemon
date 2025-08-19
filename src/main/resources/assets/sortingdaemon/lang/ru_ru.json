@@ -1,1 +1,5 @@
-{ "key.sortingdaemon.sort": "Сортировка контейнера (СКМ)", "key.categories.sortingdaemon": "Sorting Daemon" }
+{
+  "key.categories.sortingdaemon": "Sorting Daemon",
+  "key.sortingdaemon.sort.primary": "Сортировать (Основная клавиша)",
+  "key.sortingdaemon.sort.alt": "Сортировать (Альтернативная клавиша)"
+}

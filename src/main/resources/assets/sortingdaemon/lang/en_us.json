@@ -1,1 +1,5 @@
-{ "key.sortingdaemon.sort": "Sort container (Middle Click)", "key.categories.sortingdaemon": "Sorting Daemon" }
+{
+  "key.categories.sortingdaemon": "Sorting Daemon",
+  "key.sortingdaemon.sort.primary": "Sort (Primary)",
+  "key.sortingdaemon.sort.alt": "Sort (Alt)"
+}
