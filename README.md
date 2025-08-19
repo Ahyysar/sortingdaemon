@@ -20,4 +20,4 @@ A simple mod for Minecraft that adds some QOL features. You can change the key b
 
 ## License
 
-This template is available under the CC0 license. Feel free to learn from it and incorporate it in your own projects.
+This project is available under the CC0 license. Feel free to use the code, modify it, or include it in your own projects.
