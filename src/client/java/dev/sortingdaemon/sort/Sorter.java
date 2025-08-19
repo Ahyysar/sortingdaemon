@@ -1,9 +1,16 @@
 package dev.sortingdaemon.sort;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.SlotActionType;
+
+import net.minecraft.item.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
+import net.minecraft.registry.tag.ItemTags;
+import net.minecraft.component.DataComponentTypes;
+
+
 
 import java.util.*;
 
@@ -16,6 +23,87 @@ import java.util.*;
  * Работает и для нестакуемых предметов (count=1): они участвуют в свапах и сортировке.
  */
 public class Sorter {
+    
+    // ----- CATEGORIES -----
+    private enum Cat {
+        TOOLS,          // кирки, топоры, лопаты, мотыги, ножницы, удочки, кремень/сталь
+        WEAPONS,        // мечи, трезубец
+        RANGED,         // лук, арбалет, стрелы
+        ARMOR,          // шлем/нагрудник/штаны/боты, щит, элитры
+        POTIONS,        // зелья (обычные/взрывные/туманные), подозрительная рагу
+        FOOD,           // съедобное (яблоки, мясо, хлеб, медовая бутылка и т.п.)
+        REDSTONE,       // редстоун‑штуки (поршни, повторители, наблюдатели, фонари, рычаги, кнопки, раздатчики, хопперы и т.п.)
+        UTILITY,        // ведра, компасы, часы, карты, подзорные трубы, поводки, ярлыки
+        BLOCKS,         // любые BlockItem (кроме явных редстоун‑устройств выше)
+        MATERIALS,      // руды/слитки/самоцветы/красители и т.п. (остаточная «материалы»)
+        MISC            // всё остальное
+    }
+
+    private static Cat categoryOf(ItemStack st) {
+        if (st.isEmpty()) return Cat.MISC;
+        Item it = st.getItem();
+
+        // --- TOOLS (топоры/кирки/лопаты/мотыги по тегам) ---
+        if (st.isIn(ItemTags.PICKAXES) || st.isIn(ItemTags.AXES)
+                || st.isIn(ItemTags.SHOVELS) || st.isIn(ItemTags.HOES)) {
+            return Cat.TOOLS;
+        }
+        // ножницы/удочка/кремень-и-сталь как утилитарные инструменты
+        if (it == Items.SHEARS || it == Items.FISHING_ROD || it == Items.FLINT_AND_STEEL) return Cat.TOOLS;
+
+        // --- WEAPONS ---
+        if (st.isIn(ItemTags.SWORDS) || it == Items.TRIDENT) return Cat.WEAPONS;
+
+        // --- RANGED ---
+        // «луковые» по тэгам зачарований + сами стрелы
+        if (st.isIn(ItemTags.BOW_ENCHANTABLE) || st.isIn(ItemTags.CROSSBOW_ENCHANTABLE)
+                || it == Items.ARROW || it == Items.TIPPED_ARROW || it == Items.SPECTRAL_ARROW) {
+            return Cat.RANGED;
+        }
+
+        // --- ARMOR ---
+        // броня и щит/элитры — явные предметы
+        if (st.isIn(ItemTags.ARMOR_ENCHANTABLE) || it == Items.SHIELD || it == Items.ELYTRA) return Cat.ARMOR;
+
+        // --- POTIONS ---
+        if (it == Items.POTION || it == Items.SPLASH_POTION || it == Items.LINGERING_POTION || it == Items.SUSPICIOUS_STEW) {
+            return Cat.POTIONS;
+        }
+
+        // --- FOOD --- (через data component FOOD)
+        if (st.getComponents().contains(DataComponentTypes.FOOD) || it == Items.HONEY_BOTTLE || it == Items.MILK_BUCKET) {
+            return Cat.FOOD;
+        }
+
+        // --- REDSTONE --- (узнаём конкретные блоки редстоуна)
+        if (it instanceof BlockItem bi) {
+            Block b = bi.getBlock();
+            if (b == Blocks.REDSTONE_WIRE || b == Blocks.REDSTONE_TORCH || b == Blocks.REPEATER || b == Blocks.COMPARATOR
+                    || b == Blocks.OBSERVER || b == Blocks.PISTON || b == Blocks.STICKY_PISTON
+                    || b == Blocks.DISPENSER || b == Blocks.DROPPER || b == Blocks.HOPPER
+                    || b == Blocks.NOTE_BLOCK || b == Blocks.DAYLIGHT_DETECTOR
+                    || b == Blocks.LEVER || b == Blocks.STONE_BUTTON || b == Blocks.OAK_BUTTON
+                    || b == Blocks.STONE_PRESSURE_PLATE || b == Blocks.OAK_PRESSURE_PLATE
+                    || b == Blocks.LIGHT_WEIGHTED_PRESSURE_PLATE || b == Blocks.HEAVY_WEIGHTED_PRESSURE_PLATE
+                    || b == Blocks.RAIL || b == Blocks.POWERED_RAIL || b == Blocks.DETECTOR_RAIL || b == Blocks.ACTIVATOR_RAIL) {
+                return Cat.REDSTONE;
+            }
+        }
+
+        // --- UTILITY ---
+        if (it == Items.BUCKET || it == Items.WATER_BUCKET || it == Items.LAVA_BUCKET || it == Items.POWDER_SNOW_BUCKET) return Cat.UTILITY;
+        if (it == Items.COMPASS || it == Items.RECOVERY_COMPASS || it == Items.CLOCK || it == Items.FILLED_MAP || it == Items.SPYGLASS) return Cat.UTILITY;
+        if (it == Items.LEAD || it == Items.NAME_TAG) return Cat.UTILITY;
+
+        // --- BLOCKS ---
+        if (it instanceof BlockItem) return Cat.BLOCKS;
+
+        // --- MATERIALS / MISC ---
+        if (!st.isStackable()) return Cat.MISC;  // нестакуемые, не попавшие выше
+        return Cat.MATERIALS;                    // остальное стакуемое — материалы
+    }
+
+
 
     public static void sortCurrent(MinecraftClient client, ScreenHandler sh, List<Integer> slotIds) {
         if (client == null || client.player == null || client.interactionManager == null) return;
@@ -144,19 +232,24 @@ public class Sorter {
         if (a.isEmpty()) return 1;
         if (b.isEmpty()) return -1;
 
-        // 1) По ID предмета (детерминированно)
-        int c = a.getItem().toString().compareTo(b.getItem().toString());
+        // 0) Сначала категория
+        int c = Integer.compare(categoryOf(a).ordinal(), categoryOf(b).ordinal());
         if (c != 0) return c;
 
-        // 2) По компонентам/данным (чтобы разные варианты не смешивались)
+        // 1) По ID предмета
+        c = a.getItem().toString().compareTo(b.getItem().toString());
+        if (c != 0) return c;
+
+        // 2) По компонентам/данным (NBT/enchants/имя)
         c = String.valueOf(a.getComponents()).compareTo(String.valueOf(b.getComponents()));
         if (c != 0) return c;
 
-        // 3) Для ломаемых — по износу (меньше damage -> лучше)
+        // 3) По износу (меньше damage -> раньше)
         c = Integer.compare(a.getDamage(), b.getDamage());
         if (c != 0) return c;
 
         // 4) По количеству (больше вперёд)
         return Integer.compare(b.getCount(), a.getCount());
     };
+
 }
