@@ -1,24 +1,36 @@
 package dev.sortingdaemon.sort;
 
+import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Определяет какие слоты текущего GUI мы сортируем.
- * Эвристика: если в ScreenHandler есть внешние слоты (сундук и т.п.),
- * сортируем их (0..playerInvStart-1). Иначе — инвентарь игрока (последние 36).
+ * Возвращает список индексов слотов для сортировки.
+ * - Инвентарь игрока (PlayerScreenHandler): только main 9..35 (27 слотов), без хотбара 36..44,
+ *   без брони 5..8, оффхенда 45 и крафта 0..4.
+ * - Любой контейнер: только его собственные слоты (0..containerCount-1), без 36 слотов игрока.
  */
-public class InventoryRangeResolver {
-    public record Range(int startInclusive, int endExclusive) {}
+public final class InventoryRangeResolver {
 
-    public static Range resolve(ScreenHandler sh) {
+    private InventoryRangeResolver() {}
+
+    public static List<Integer> resolveSlotIndices(ScreenHandler sh) {
         int total = sh.slots.size();
-        // 27 "рюкзак" + 9 хотбар = 36 слотов игрока
-        int playerInvStart = Math.max(0, total - 36);
 
-        // Если слоты до инвентаря игрока существуют — это контейнер (сундук и т.п.)
-        if (playerInvStart > 0) return new Range(0, playerInvStart);
+        // Инвентарь игрока
+        if (sh instanceof PlayerScreenHandler) {
+            List<Integer> ids = new ArrayList<>(27);
+            // main inventory 9..35 (включительно)
+            for (int i = 9; i <= 35; i++) ids.add(i);
+            return ids;
+        }
 
-        // Иначе открыт чисто инвентарь игрока — сортируем его
-        return new Range(playerInvStart, total);
+        // Контейнер: [0..containerCount-1], потом идут 36 слотов игрока (которые не трогаем)
+        int containerCount = Math.max(0, total - 36);
+        List<Integer> ids = new ArrayList<>(containerCount);
+        for (int i = 0; i < containerCount; i++) ids.add(i);
+        return ids;
     }
 }
