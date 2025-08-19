@@ -5,83 +5,109 @@ import dev.sortingdaemon.sort.Sorter;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.MinecraftClient;
+
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
+
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SortingDaemonClient implements ClientModInitializer {
-    private static final Logger LOG = LoggerFactory.getLogger("sortingdaemon");
+    public static final String MODID = "sortingdaemon";
+    private static final Logger LOG = LoggerFactory.getLogger(MODID);
 
-    // Альтернативный хоткей на клавиатуре (работает в GUI)
-    private static KeyBinding keySortAltG;
+    private static KeyBinding sortKeyPrimary; // по умолчанию СКМ
+    private static KeyBinding sortKeyAlt;     // по умолчанию G
 
-    // Для опроса СКМ (edge detect)
-    private static boolean mmbWasDown = false;
-    private static boolean gWasDown = false;
+    // Состояние для edge-detect’а
+    private static boolean primaryWasDown = false;
+    private static boolean altWasDown = false;
 
     @Override
     public void onInitializeClient() {
-        System.out.println("[SortingDaemon] onInitializeClient fired");
+        sortKeyPrimary = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.sortingdaemon.sort.primary",
+                InputUtil.Type.MOUSE,
+                GLFW.GLFW_MOUSE_BUTTON_MIDDLE,
+                "key.categories.sortingdaemon"
+        ));
 
-        keySortAltG = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.sortingdaemon.sort_alt",
+        sortKeyAlt = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.sortingdaemon.sort.alt",
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_G,
-                "key.categories.sortingdaemon"));
+                "key.categories.sortingdaemon"
+        ));
 
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+        LOG.info("Primary key registered: {}", sortKeyPrimary.getBoundKeyTranslationKey());
+        LOG.info("Alt key registered: {}", sortKeyAlt.getBoundKeyTranslationKey());
+        LOG.info("SortingDaemon loaded; keybinds registered.");
+
+        // Используем START_CLIENT_TICK и опрашиваем GLFW напрямую по типу bound key
+        ClientTickEvents.START_CLIENT_TICK.register(client -> {
             if (client == null) return;
 
-            // один раз получаем дескриптор окна
-            long win = client.getWindow().getHandle();
+            final long win = client.getWindow().getHandle();
 
-            // --- G через GLFW (edge detect)
-            boolean gDownNow = GLFW.glfwGetKey(win, GLFW.GLFW_KEY_G) == GLFW.GLFW_PRESS;
+            // читаем фактически назначенные клавиши
+            final InputUtil.Key pKey = InputUtil.fromTranslationKey(sortKeyPrimary.getBoundKeyTranslationKey());
+            final InputUtil.Key aKey = InputUtil.fromTranslationKey(sortKeyAlt.getBoundKeyTranslationKey());
+
+
+            // текущее «нажато/нет» с учётом типа (мышь/клава)
+            boolean primaryDownNow = isKeyCurrentlyDown(win, pKey);
+            boolean altDownNow     = isKeyCurrentlyDown(win, aKey);
+
+            // триггеры нажатий (up -> down)
+            boolean primaryPressed = primaryDownNow && !primaryWasDown;
+            boolean altPressed     = altDownNow && !altWasDown;
+
+            primaryWasDown = primaryDownNow;
+            altWasDown     = altDownNow;
+
+            // работать только когда открыт контейнер
             if (client.currentScreen instanceof HandledScreen<?> screen) {
-                if (gDownNow && !gWasDown) {
+                if (primaryPressed || altPressed) {
                     var handler = screen.getScreenHandler();
-                    var range = InventoryRangeResolver.resolve(handler);
-                    System.out.println("[SortingDaemon] G (GLFW) → sorting");
+                    var range   = InventoryRangeResolver.resolve(handler);
+
+                    LOG.info("[SortingDaemon] Triggered in {} slots={} range=[{}..{})",
+                            screen.getClass().getSimpleName(),
+                            handler.slots.size(),
+                            range.startInclusive(),
+                            range.endExclusive());
+
                     Sorter.sortCurrent(client, handler, range);
+
                     if (client.player != null) {
                         client.player.sendMessage(Text.literal("[SortingDaemon] Sorting…"), true);
                     }
                 }
             } else {
-                if (gDownNow && !gWasDown) {
-                    System.out.println("[SortingDaemon] G pressed but no HandledScreen open");
+                if (primaryPressed || altPressed) {
+                    LOG.info("[SortingDaemon] Sort pressed but no HandledScreen open");
                 }
-            }
-            gWasDown = gDownNow;
-
-            // --- СКМ через GLFW (edge detect)
-            if (client.currentScreen instanceof HandledScreen<?> screen) {
-                boolean mmbDownNow = GLFW.glfwGetMouseButton(win, GLFW.GLFW_MOUSE_BUTTON_MIDDLE) == GLFW.GLFW_PRESS;
-                if (mmbDownNow && !mmbWasDown) {
-                    var handler = screen.getScreenHandler();
-                    var range = InventoryRangeResolver.resolve(handler);
-
-                    System.out.println("[SortingDaemon] MMB in " + screen.getClass().getSimpleName()
-                            + " slots=" + handler.slots.size()
-                            + " range=[" + range.startInclusive() + ".." + range.endExclusive() + ")");
-
-                    Sorter.sortCurrent(client, handler, range);
-                    if (client.player != null) {
-                        client.player.sendMessage(Text.literal("[SortingDaemon] Sorting…"), true);
-                    }
-                }
-                mmbWasDown = mmbDownNow;
-            } else {
-                mmbWasDown = false;
             }
         });
+    }
 
-
-        LOG.info("SortingDaemon loaded; keybinds registered.");
+    // Правильный опрос: мышь -> glfwGetMouseButton, клавиатура -> glfwGetKey
+    private static boolean isKeyCurrentlyDown(long windowHandle, InputUtil.Key key) {
+        switch (key.getCategory()) {
+            case MOUSE -> {
+                // код мыши — это GLFW_MOUSE_BUTTON_*
+                return GLFW.glfwGetMouseButton(windowHandle, key.getCode()) == GLFW.GLFW_PRESS;
+            }
+            case KEYSYM, SCANCODE -> {
+                // код клавиши — это GLFW_KEY_*
+                return GLFW.glfwGetKey(windowHandle, key.getCode()) == GLFW.GLFW_PRESS;
+            }
+            default -> {
+                return false;
+            }
+        }
     }
 }
