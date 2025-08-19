@@ -1,7 +1,7 @@
 {
 	"schemaVersion": 1,
 	"id": "sortingdaemon",
-	"version": "1.0.0",
+	"version": "0.1",
 	"name": "Sorting Daemon",
 	"description": "A simple sorting mod for Minecraft.",
 	"authors": [

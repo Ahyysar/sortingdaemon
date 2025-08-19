@@ -73,7 +73,7 @@ public class SortingDaemonClient implements ClientModInitializer {
                 return;
             }
 
-            // 🔒 Блокируем креативный «каталог всех предметов»
+            // Блокируем креативный «каталог всех предметов»
             String screenClass = screen.getClass().getName();
             if (screenClass.contains("CreativeInventoryScreen")) {
                 // В креативе не трогаем, иначе ломается виртуальный список предметов
