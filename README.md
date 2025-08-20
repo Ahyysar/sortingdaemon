@@ -50,6 +50,7 @@ git clone https://github.com/Ahyysar/sortingdaemon
 cd sortingdaemon
 ./gradlew build
 # The mod jar will be in build/libs/
+```
 
 ## License
 
