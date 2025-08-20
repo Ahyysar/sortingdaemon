@@ -1,4 +1,4 @@
-# sortingdaemon
+# Sorting Daemon
 
 A simple mod for Minecraft that adds some QoL features. You can change the key bindings yourself.
 
