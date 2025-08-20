@@ -10,10 +10,12 @@ A simple mod for Minecraft that adds some QoL features. You can change the key b
 - 📦 Sort chests and inventory with a single button
 - 🖱️ **Drag to drop** — hold **Shift + LMB** and drag across slots → items are transferred just like with Shift+Click, but without spamming clicks
 - 📥 **Quick deposit** — move matching items from your inventory into the opened container
+- ⭐ **Favorite Slots** — mark specific slots in your inventory as *favorite* so they won’t be sorted or quick-deposited
 - 🔑 Hotkeys:
     - **MMB** — main sorting key
     - **G** — alt sorting key
     - **K** — quick deposit
+    - **Ctrl + Z** — toggle favorite slot
 - ⚙️ Easy installation (just drop it into `mods/`)
 
 ## Requirements
@@ -28,7 +30,7 @@ A simple mod for Minecraft that adds some QoL features. You can change the key b
    - [Fabric API on Modrinth](https://modrinth.com/mod/fabric-api)  
    - [Fabric API on CurseForge](https://www.curseforge.com/minecraft/mc-mods/fabric-api)  
 3. Download the latest release from the [Releases](../../releases) page  
-   (e.g. `sortingdaemon-0.1.2-mc1.21.8.jar`) and put it into the same `mods/` folder.
+   (e.g. `sortingdaemon-0.1.3-mc1.21.8.jar`) and put it into the same `mods/` folder.
 4. Launch the game.
 
 ## How to use it
@@ -36,6 +38,8 @@ A simple mod for Minecraft that adds some QoL features. You can change the key b
 - Open any container (e.g. a chest) and press the sorting key to tidy it up.
 - Drag to drop — hold down **Shift + LMB** on the slots to quickly transfer items between containers.  
 - Quick Deposit — press assigned key while a container is open to move matching items into it.  
+- Favorite Slots — hover over a slot and press **Ctrl + Z** to mark/unmark it as favorite.  
+  - Favorite slots will not be affected by sorting or quick deposit.
 - You can change keybinds in **Options → Controls → Key Binds**.
 
 ## Keybinds
@@ -45,6 +49,7 @@ A simple mod for Minecraft that adds some QoL features. You can change the key b
 | Alt sort key      | **G**            |
 | Drag to drop      | **Shift + LMB**  |
 | Quick deposit     | **K**            |
+| Mark  as favorite | **Ctrl + Z**     |
 
 ## Compatibility
 - Works in **Survival** and **Adventure** modes.
