@@ -6,11 +6,13 @@ A simple mod for Minecraft that adds some QOL features. You can change the key b
 - 📦 Sort chests and inventory with a single button
 - 🔑 Hotkeys:
     - **MMB** — main sorting key
-    - **G** — alt
+    - **G** — alt sorting key
 - ⚙️ Easy installation (just drop it into `mods/`)
 
 ## Requirements
-**Minecraft 1.21.8**
+- **Minecraft 1.21.8**
+- Fabric
+- Fabric API
 
 ## Setup
 
@@ -20,6 +22,14 @@ A simple mod for Minecraft that adds some QOL features. You can change the key b
    - [Fabric API on CurseForge](https://www.curseforge.com/minecraft/mc-mods/fabric-api)  
 3. Download the latest `sortingdaemon-x.x.jar` and put it in the same `mods/` folder.  
 4. Launch the game.
+
+## How to use it
+- To sort your inventory, open it and press the key assigned for sorting (primary or alternative).
+- To sort any container, such as a chest, open it and press the key assigned for sorting (primary or alternative).
+- You can change the key binds in the game settings.
+
+## Known issues
+Unfortunately, **in creative mode**, the player's inventory will not be sorted.
 
 ## License
 
