@@ -1,6 +1,6 @@
 # sortingdaemon
 
-A simple mod for Minecraft that adds some QOL features. You can change the key bindings yourself.
+A simple mod for Minecraft that adds some QoL features. You can change the key bindings yourself.
 
 ![License](https://img.shields.io/badge/license-CC0--1.0-lightgrey)
 ![Game Version](https://img.shields.io/badge/Minecraft-1.21.8-blue)
@@ -8,6 +8,8 @@ A simple mod for Minecraft that adds some QOL features. You can change the key b
 
 ## Features
 - 📦 Sort chests and inventory with a single button
+- 🖱️ DragToDrop mode:
+  - Hold **Shift + LMB** and drag across slots → items are transferred just like with Shift+Click, but without spamming clicks
 - 🔑 Hotkeys:
     - **MMB** — main sorting key
     - **G** — alt sorting key
@@ -25,7 +27,7 @@ A simple mod for Minecraft that adds some QOL features. You can change the key b
    - [Fabric API on Modrinth](https://modrinth.com/mod/fabric-api)  
    - [Fabric API on CurseForge](https://www.curseforge.com/minecraft/mc-mods/fabric-api)  
 3. Download the latest release from the [Releases](../../releases) page  
-   (e.g. `sortingdaemon-0.1-mc1.21.8.jar`) and put it into the same `mods/` folder.
+   (e.g. `sortingdaemon-0.1.1-mc1.21.8.jar`) and put it into the same `mods/` folder.
 4. Launch the game.
 
 ## How to use it
