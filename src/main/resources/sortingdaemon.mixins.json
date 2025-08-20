@@ -4,7 +4,10 @@
   "compatibilityLevel": "JAVA_21",
   "refmap": "client-sortingdaemon.refmap.json",
   "client": [
-    "DragToDropMixin"
+    "DragToDropMixin",
+    "FavoriteSlotsMixin",
+    "FavoriteSlotsInventoryMixin",
+    "access.HandledScreenAccessor"
   ],
   "injectors": { "defaultRequire": 1 }
 }

@@ -34,7 +34,7 @@ A simple mod for Minecraft that adds some QoL features. You can change the key b
 ## How to use it
 - Open your inventory and press the assigned sorting key (primary or alternative).
 - Open any container (e.g. a chest) and press the sorting key to tidy it up.
-- Drag to drop — drag an item outside the inventory GUI to quickly drop it.  
+- Drag to drop — hold down **Shift + LMB** on the slots to quickly transfer items between containers.  
 - Quick Deposit — press assigned key while a container is open to move matching items into it.  
 - You can change keybinds in **Options → Controls → Key Binds**.
 

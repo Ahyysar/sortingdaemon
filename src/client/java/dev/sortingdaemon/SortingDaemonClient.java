@@ -1,26 +1,25 @@
 package dev.sortingdaemon;
 
-import dev.sortingdaemon.sort.InventoryRangeResolver;
-import dev.sortingdaemon.sort.Sorter;
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.text.Text;
-import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
-
+import java.util.List;
 
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import dev.sortingdaemon.config.SDConfig;
+import dev.sortingdaemon.fav.FavoriteSlots;
 import dev.sortingdaemon.features.QuickDepositFeature;
-
-import java.util.List;
+import dev.sortingdaemon.sort.InventoryRangeResolver;
+import dev.sortingdaemon.sort.Sorter;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.InputUtil;
+import net.minecraft.text.Text;
 
 public class SortingDaemonClient implements ClientModInitializer {
     public static final String MODID = "sortingdaemon";
@@ -35,6 +34,8 @@ public class SortingDaemonClient implements ClientModInitializer {
     private static boolean primaryWasDown = false;
     private static boolean altWasDown = false;
     private static boolean quickDepositWasDown = false;
+
+    public static KeyBinding FAVORITE_TOGGLE_KEY;
 
 
     @Override
@@ -56,6 +57,8 @@ public class SortingDaemonClient implements ClientModInitializer {
         LOG.info("Primary key registered: {}", sortKeyPrimary.getBoundKeyTranslationKey());
         LOG.info("Alt  key registered: {}", sortKeyAlt.getBoundKeyTranslationKey());
         LOG.info("SortingDaemon loaded; keybinds registered.");
+        
+        FavoriteSlots.load();
 
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             if (client == null) return;
@@ -93,6 +96,7 @@ public class SortingDaemonClient implements ClientModInitializer {
             if (primaryPressed || altPressed) {
                 var handler = screen.getScreenHandler();
                 List<Integer> ids = InventoryRangeResolver.resolveSlotIndices(handler);
+                ids.removeIf(FavoriteSlots::isFavorite);
 
                 LOG.info("[SortingDaemon] Triggered in {} slots={} picked={}",
                         screen.getClass().getSimpleName(), handler.slots.size(), ids.size());
@@ -144,6 +148,13 @@ public class SortingDaemonClient implements ClientModInitializer {
                 }
             }
         });
+
+        FAVORITE_TOGGLE_KEY = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+            "key.sortingdaemon.fav_toggle",  // id для lang файла
+            InputUtil.Type.KEYSYM,
+            GLFW.GLFW_KEY_Z,                 // дефолт — клавиша Z
+            "key.categories.sortingdaemon"
+        ));
 
     }
 

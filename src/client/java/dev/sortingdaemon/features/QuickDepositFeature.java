@@ -1,6 +1,7 @@
 package dev.sortingdaemon.features;
 
 import dev.sortingdaemon.config.SDConfig;
+import dev.sortingdaemon.fav.FavoriteSlots;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.client.MinecraftClient;
@@ -57,6 +58,7 @@ public final class QuickDepositFeature {
     }
 
     private static boolean shouldConsiderPlayerSlot(Slot slot, SDConfig.QuickDeposit cfg) {
+        if (FavoriteSlots.isFavorite(slot.getIndex())) return false;
         int i = slot.getIndex();
 
         // хотбар 0–8

@@ -5,5 +5,8 @@
   "key.sortingdaemon.quick_deposit": "Быстрая выгрузка",
   "sortingdaemon.quick_deposit.none": "Нечего выгружать",
   "sortingdaemon.sorting.start": "Сортировка…",
-  "sortingdaemon.quick_deposit.start": "Выгрузка…"
+  "sortingdaemon.quick_deposit.start": "Выгрузка…",
+  "sortingdaemon.fav.added": "Слот добавлен в избранное",
+  "sortingdaemon.fav.removed": "Слот убран из избранного",
+  "key.sortingdaemon.fav_toggle": "Избранный слот (Ctrl + _)"
 }

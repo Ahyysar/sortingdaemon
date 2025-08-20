@@ -2,10 +2,14 @@
   "key.categories.sortingdaemon": "Sorting Daemon",
   "key.sortingdaemon.sort.primary": "Sort (Primary)",
   "key.sortingdaemon.sort.alt": "Sort (Alt)",
-  "key.sortingdaemon.quick_deposit": "Quick Deposit",
+  "key.sortingdaemon.quick_deposit": "Quick deposit",
   "sortingdaemon.quick_deposit.none": "Nothing to deposit",
   "sortingdaemon.sorting.start": "Sorting…",
-  "sortingdaemon.quick_deposit.start": "Deposit…"
+  "sortingdaemon.quick_deposit.start": "Deposit…",
+  "sortingdaemon.fav.added": "Slot marked as favorite",
+  "sortingdaemon.fav.removed": "Slot unmarked",
+  "key.sortingdaemon.fav_toggle": "Toggle favorite slot (Ctrl + _)"
+
   
 }
 
