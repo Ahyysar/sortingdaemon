@@ -11,7 +11,7 @@ A simple mod for Minecraft that adds some QOL features. You can change the key b
 
 ## Requirements
 - **Minecraft 1.21.8**
-- Fabric
+- Fabric Loader
 - Fabric API
 
 ## Setup
@@ -29,7 +29,7 @@ A simple mod for Minecraft that adds some QOL features. You can change the key b
 - You can change the key binds in the game settings.
 
 ## Known issues
-Unfortunately, **in creative mode**, the player's inventory will not be sorted.
+⚠️ Unfortunately, **in creative mode**, the player's inventory will not be sorted.
 
 ## License
 
