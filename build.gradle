@@ -11,6 +11,8 @@ base {
 }
 
 repositories {
+	mavenCentral()
+	maven { url = "https://repo.spongepowered.org/maven" }
 	// Add repositories to retrieve artifacts from in here.
 	// You should only use this when depending on other mods because
 	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
@@ -19,6 +21,11 @@ repositories {
 }
 
 loom {
+
+	mixin {
+        defaultRefmapName = "sortingdaemon.refmap.json"
+    }
+
 	splitEnvironmentSourceSets()
 
 	mods {
@@ -38,6 +45,10 @@ dependencies {
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+	// аннотационный процессор Mixin для main И для client
+    annotationProcessor "org.spongepowered:mixin:0.8.7:processor"
+    clientAnnotationProcessor "org.spongepowered:mixin:0.8.7:processor"
 	
 }
 
@@ -93,3 +104,22 @@ publishing {
 		// retrieving dependencies.
 	}
 }
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.compilerArgs += [
+        "-AoutRefMap=sortingdaemon.refmap.json",
+        "-AdefaultObfuscationEnv=named"
+    ]
+}
+
+tasks.register("copyRefmap", Copy) {
+    from("$buildDir/classes/java/main")
+    from("$buildDir/classes/java/client")
+    include("sortingdaemon.refmap.json")
+    into("$buildDir/resources/main")
+}
+
+tasks.named("processResources") {
+    dependsOn("copyRefmap")
+}
+
