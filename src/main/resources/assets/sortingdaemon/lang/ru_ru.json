@@ -1,5 +1,9 @@
 {
   "key.categories.sortingdaemon": "Sorting Daemon",
-  "key.sortingdaemon.sort.primary": "Сортировать (Основная клавиша)",
-  "key.sortingdaemon.sort.alt": "Сортировать (Альтернативная клавиша)"
+  "key.sortingdaemon.sort.primary": "Сортировать (осн.)",
+  "key.sortingdaemon.sort.alt": "Сортировать (альт.)",
+  "key.sortingdaemon.quick_deposit": "Быстрая выгрузка",
+  "sortingdaemon.quick_deposit.none": "Нечего выгружать",
+  "sortingdaemon.sorting.start": "Сортировка…",
+  "sortingdaemon.quick_deposit.start": "Выгрузка…"
 }

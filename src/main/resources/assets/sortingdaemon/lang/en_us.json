@@ -1,5 +1,11 @@
 {
   "key.categories.sortingdaemon": "Sorting Daemon",
   "key.sortingdaemon.sort.primary": "Sort (Primary)",
-  "key.sortingdaemon.sort.alt": "Sort (Alt)"
+  "key.sortingdaemon.sort.alt": "Sort (Alt)",
+  "key.sortingdaemon.quick_deposit": "Quick Deposit",
+  "sortingdaemon.quick_deposit.none": "Nothing to deposit",
+  "sortingdaemon.sorting.start": "Sorting…",
+  "sortingdaemon.quick_deposit.start": "Deposit…"
+  
 }
+

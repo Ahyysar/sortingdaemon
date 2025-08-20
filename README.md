@@ -8,7 +8,7 @@ A simple mod for Minecraft that adds some QoL features. You can change the key b
 
 ## Features
 - 📦 Sort chests and inventory with a single button
-- 🖱️ DragToDrop mode:
+- 🖱️ Drag to drop:
   - Hold **Shift + LMB** and drag across slots → items are transferred just like with Shift+Click, but without spamming clicks
 - 🔑 Hotkeys:
     - **MMB** — main sorting key

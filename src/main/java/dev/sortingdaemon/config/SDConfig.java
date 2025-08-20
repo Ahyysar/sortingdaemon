@@ -24,6 +24,17 @@ public class SDConfig {
         public int mouseButton = 0;           // 0 = ЛКМ (на будущее)
     }
 
+    public static class QuickDeposit {
+        public boolean enabled = true;
+        public boolean includeHotbar = true;
+        public boolean includeMain = true;      // основные 27 слотов
+        public boolean includeOffhand = false;
+        public boolean includeArmor = false;    // на всякий случай
+        public int defaultKey = 75;             // GLFW.GLFW_KEY_K
+    }
+    
+    public QuickDeposit quickDeposit = new QuickDeposit();
+
     public static SDConfig get() {
         if (INSTANCE == null) INSTANCE = load();
         return INSTANCE;
