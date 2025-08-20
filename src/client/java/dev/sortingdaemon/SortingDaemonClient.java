@@ -15,6 +15,9 @@ import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dev.sortingdaemon.config.SDConfig;
+
+
 import java.util.List;
 
 public class SortingDaemonClient implements ClientModInitializer {
@@ -97,7 +100,14 @@ public class SortingDaemonClient implements ClientModInitializer {
                     }
                 }
             }
+        
+
         });
+        
+        // создаём/загружаем конфиг при старте клиента
+        SDConfig.get();
+        
+        // тут же можно регистрировать хоткеи, ивенты и т.д.
     }
 
     private static boolean isKeyDown(long win, InputUtil.Key key) {

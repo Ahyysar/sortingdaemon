@@ -1,10 +1,9 @@
 {
-  "required": false,
-  "minVersion": "0.8",
-  "package": "dev.sortingdaemon.mixin",
+  "required": true,
+  "package": "dev.sortingdaemon.mixins",
   "compatibilityLevel": "JAVA_21",
-  "client": [],
-  "injectors": {
-    "defaultRequire": 1
-  }
+  "client": [
+    "DragToDropMixin"
+  ],
+  "injectors": { "defaultRequire": 1 }
 }
