@@ -2,6 +2,10 @@
 
 A simple mod for Minecraft that adds some QOL features. You can change the key bindings yourself.
 
+![License](https://img.shields.io/badge/license-CC0--1.0-lightgrey)
+![Game Version](https://img.shields.io/badge/Minecraft-1.21.8-blue)
+![Mod Loader](https://img.shields.io/badge/Loader-Fabric-orange)
+
 ## Features
 - 📦 Sort chests and inventory with a single button
 - 🔑 Hotkeys:
@@ -10,26 +14,42 @@ A simple mod for Minecraft that adds some QOL features. You can change the key b
 - ⚙️ Easy installation (just drop it into `mods/`)
 
 ## Requirements
-- **Minecraft 1.21.8**
+- Minecraft 1.21.8
 - Fabric Loader
 - Fabric API
 
-## Setup
+## Installation
 
 1. Install [Fabric Loader](https://fabricmc.net/use/installer/).  
 2. Download and place **Fabric API** into your `mods/` folder.  
    - [Fabric API on Modrinth](https://modrinth.com/mod/fabric-api)  
    - [Fabric API on CurseForge](https://www.curseforge.com/minecraft/mc-mods/fabric-api)  
-3. Download the latest `sortingdaemon-x.x.jar` and put it in the same `mods/` folder.  
+3. Download the latest release from the [Releases](../../releases) page  
+   (e.g. `sortingdaemon-0.1-mc1.21.8.jar`) and put it into the same `mods/` folder.
 4. Launch the game.
 
 ## How to use it
-- To sort your inventory, open it and press the key assigned for sorting (primary or alternative).
-- To sort any container, such as a chest, open it and press the key assigned for sorting (primary or alternative).
-- You can change the key binds in the game settings.
+- Open your inventory and press the assigned sorting key (primary or alternative).
+- Open any container (e.g. a chest) and press the sorting key to tidy it up.
+- You can change keybinds in **Options → Controls → Key Binds**.
 
-## Known issues
-⚠️ Unfortunately, **in creative mode**, the player's inventory will not be sorted.
+## Keybinds
+| Action            | Default |
+|-------------------|---------|
+| Primary sort key  | **MMB** |
+| Alt sort key      | **G**   |
+
+## Compatibility
+- Works in **Survival** and **Adventure** modes.
+- ⚠️ In **Creative Mode**, the player inventory is **not** sorted (containers still are).
+
+## Building from source
+```bash
+# Clone and build
+git clone https://github.com/Ahyysar/sortingdaemon
+cd sortingdaemon
+./gradlew build
+# The mod jar will be in build/libs/
 
 ## License
 
