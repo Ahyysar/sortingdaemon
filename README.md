@@ -8,11 +8,12 @@ A simple mod for Minecraft that adds some QoL features. You can change the key b
 
 ## Features
 - 📦 Sort chests and inventory with a single button
-- 🖱️ Drag to drop:
-  - Hold **Shift + LMB** and drag across slots → items are transferred just like with Shift+Click, but without spamming clicks
+- 🖱️ **Drag to drop** — hold **Shift + LMB** and drag across slots → items are transferred just like with Shift+Click, but without spamming clicks
+- 📥 **Quick deposit** — move matching items from your inventory into the opened container
 - 🔑 Hotkeys:
     - **MMB** — main sorting key
     - **G** — alt sorting key
+    - **K** — quick deposit
 - ⚙️ Easy installation (just drop it into `mods/`)
 
 ## Requirements
@@ -27,23 +28,27 @@ A simple mod for Minecraft that adds some QoL features. You can change the key b
    - [Fabric API on Modrinth](https://modrinth.com/mod/fabric-api)  
    - [Fabric API on CurseForge](https://www.curseforge.com/minecraft/mc-mods/fabric-api)  
 3. Download the latest release from the [Releases](../../releases) page  
-   (e.g. `sortingdaemon-0.1.1-mc1.21.8.jar`) and put it into the same `mods/` folder.
+   (e.g. `sortingdaemon-0.1.2-mc1.21.8.jar`) and put it into the same `mods/` folder.
 4. Launch the game.
 
 ## How to use it
 - Open your inventory and press the assigned sorting key (primary or alternative).
 - Open any container (e.g. a chest) and press the sorting key to tidy it up.
+- Drag to drop — drag an item outside the inventory GUI to quickly drop it.  
+- Quick Deposit — press assigned key while a container is open to move matching items into it.  
 - You can change keybinds in **Options → Controls → Key Binds**.
 
 ## Keybinds
-| Action            | Default |
-|-------------------|---------|
-| Primary sort key  | **MMB** |
-| Alt sort key      | **G**   |
+| Action            | Default          |
+|-------------------|------------------|
+| Primary sort key  | **MMB**          |
+| Alt sort key      | **G**            |
+| Drag to drop      | **Shift + LMB**  |
+| Quick deposit     | **K**            |
 
 ## Compatibility
 - Works in **Survival** and **Adventure** modes.
-- ⚠️ In **Creative Mode**, the player inventory is **not** sorted (containers still are).
+- ⚠️ In **Creative Mode**, the player's inventory cannot be sorted.
 
 ## Building from source
 ```bash
