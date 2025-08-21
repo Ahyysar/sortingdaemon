@@ -14,11 +14,6 @@ A simple mod for Minecraft that adds some QoL features.
 - 🖱️ **Drag to drop** — hold **Shift + LMB** and drag across slots → items are transferred just like with Shift+Click, but without spamming clicks
 - 📥 **Quick deposit** — move matching items from your inventory into the opened container
 - ⭐ **Favorite Slots** — mark specific slots in your inventory as *favorite* so they won’t be sorted or quick-deposited
-- 🔑 Hotkeys:
-    - **MMB** — main sorting key
-    - **G** — alt sorting key
-    - **K** — quick deposit
-    - **Ctrl + Z** — toggle favorite slot
 - ⌨️ Set up key binds for yourself
 - ⚙️ Easy installation (just drop it into `mods/`)
 
