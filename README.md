@@ -30,7 +30,7 @@ A simple mod for Minecraft that adds some QoL features. You can change the key b
    - [Fabric API on Modrinth](https://modrinth.com/mod/fabric-api)  
    - [Fabric API on CurseForge](https://www.curseforge.com/minecraft/mc-mods/fabric-api)  
 3. Download the latest release from the [Releases](../../releases) page  
-   (e.g. `sortingdaemon-0.1.3-mc1.21.8.jar`) and put it into the same `mods/` folder.
+   (e.g. `sortingdaemon-0.1.4-mc1.21.8.jar`) and put it into the same `mods/` folder.
 4. Launch the game.
 
 ## How to use it
