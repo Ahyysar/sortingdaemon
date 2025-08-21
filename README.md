@@ -1,12 +1,12 @@
 # Sorting Daemon
 
-### A simple mod for Minecraft that adds some QoL features. You can change the key bindings yourself.
+A simple mod for Minecraft that adds some QoL features.
 
 ![License](https://img.shields.io/badge/license-CC0--1.0-lightgrey)
 ![Game Version](https://img.shields.io/badge/Minecraft-1.21.8-blue)
 ![Mod Loader](https://img.shields.io/badge/Loader-Fabric-orange)
 
-![banner-min](https://github.com/user-attachments/assets/0ac14d80-ca89-4376-8c5e-1b7705bfa868)
+![banner-min](https://github.com/user-attachments/assets/2dc4fa12-590c-467c-8958-fb58415535a4)
 
 ## Features
 - 📦 Sort chests and inventory with a single button
@@ -18,6 +18,7 @@
     - **G** — alt sorting key
     - **K** — quick deposit
     - **Ctrl + Z** — toggle favorite slot
+- ⌨️ Set up key binds for yourself
 - ⚙️ Easy installation (just drop it into `mods/`)
 
 ## Requirements
