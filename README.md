@@ -18,7 +18,6 @@ A simple mod for Minecraft that adds some QoL features.
 - ⚙️ Easy installation (just drop it into `mods/`)
 
 ## Requirements
-- Minecraft 1.21.8
 - Fabric Loader
 - Fabric API
 
@@ -52,7 +51,7 @@ A simple mod for Minecraft that adds some QoL features.
 
 ## Compatibility
 - Works in **Survival** and **Adventure** modes.
-- ⚠️ In **Creative Mode**, the player's inventory cannot be sorted.
+- In **Creative Mode**, the player's inventory cannot be sorted. ⚠️
 
 ## Building from source
 ```bash
