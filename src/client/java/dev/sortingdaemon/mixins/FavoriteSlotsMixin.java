@@ -55,13 +55,17 @@ public abstract class FavoriteSlotsMixin extends Screen {
 
         if (!pressed) return;
 
-        // дальше твой код toggle по слоту...
         double mx = mc.mouse.getX() * mc.getWindow().getScaledWidth()  / (double) mc.getWindow().getWidth();
         double my = mc.mouse.getY() * mc.getWindow().getScaledHeight() / (double) mc.getWindow().getHeight();
         Slot slot = getSlotAt(mx, my);
-        if (slot == null || !sd$isPlayerInventorySlot(slot)) return;
+        if (slot == null) return;
 
-        int idx = slot.getIndex(); // или slot.id в твоих маппингах
+        if (!(slot.inventory == mc.player.getInventory())) return;
+        int idx = slot.getIndex(); // или slot.id
+        if (idx < 9 || idx > 35) return;
+
+
+
         boolean ok = dev.sortingdaemon.fav.FavoriteSlots.toggleFavorite(idx);
         if (ok) {
             mc.player.sendMessage(Text.translatable(
@@ -71,44 +75,5 @@ public abstract class FavoriteSlotsMixin extends Screen {
             ), true);
         }
     }
-
-
-    @Unique
-    private boolean sd$isPlayerInventorySlot(Slot s) {
-        // Проверяем, что это именно инвентарь игрока и индекс в 9..35
-        try {
-            boolean isPlayerInv = s.inventory == MinecraftClient.getInstance().player.getInventory();
-            int i = s.getIndex();
-            return isPlayerInv && i >= 9 && i <= 35;
-        } catch (Throwable t) {
-            return false;
-        }
-    }
-
-    // 2.2 Подсветка избранных слотов (контур/заливка поверх слота)
-    @Inject(method = "render", at = @At("TAIL"))
-    private void sd$renderFavs(DrawContext ctx, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        ScreenHandler sh = getScreenHandler();
-
-        for (Slot s : sh.slots) {
-            if (!sd$isPlayerInventorySlot(s)) continue;
-            if (!FavoriteSlots.isFavorite(s.getIndex())) continue; // если нет getIndex(), возьми s.id
-
-            // Slot.x/y заданы относительно фона — прибавляем смещение экрана
-            int rx = this.x + s.x;   // или backgroundX
-            int ry = this.y + s.y;   // или backgroundY
-
-            int x1 = rx - 1, y1 = ry - 1;
-            int x2 = x1 + 18, y2 = y1 + 18;
-
-            // более заметная альфа
-            // ctx.fill(x1, y1, x2, y2, 0xA0FFD54F);  // заливка (жёлтый, ~63% прозрачности)
-            ctx.drawBorder(x1, y1, 18, 18, 0xE6FFD08F); // рамка
-        }
-    }
-
-
-
-
 
 }

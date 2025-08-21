@@ -6,8 +6,7 @@
   "client": [
     "DragToDropMixin",
     "FavoriteSlotsMixin",
-    "FavoriteSlotsInventoryMixin",
-    "access.HandledScreenAccessor"
+    "FavoriteSlotsSlotOverlayMixin"
   ],
   "injectors": { "defaultRequire": 1 }
 }
