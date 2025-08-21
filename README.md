@@ -6,10 +6,11 @@ A simple mod for Minecraft that adds some QoL features.
 ![Game Version](https://img.shields.io/badge/Minecraft-1.21.8-blue)
 ![Mod Loader](https://img.shields.io/badge/Loader-Fabric-orange)
 
-<img width="1951" height="714" alt="screen-sort" src="https://github.com/user-attachments/assets/e6e202a1-6ee9-4a96-8d1f-bfd32d3755db" />
+![main-banner-min](https://github.com/user-attachments/assets/d3d91625-809c-4357-b9bd-945c8aa449a3)
 
-## Features
+# Features
 - 📦 Sort chests and inventory with a single button
+  <img width="1951" height="714" alt="screen-sort" src="https://github.com/user-attachments/assets/21e7e7bd-d6e2-4e7e-83f0-c5ff64000a66" />
 - 🖱️ **Drag to drop** — hold **Shift + LMB** and drag across slots → items are transferred just like with Shift+Click, but without spamming clicks
 - 📥 **Quick deposit** — move matching items from your inventory into the opened container
 - ⭐ **Favorite Slots** — mark specific slots in your inventory as *favorite* so they won’t be sorted or quick-deposited
