@@ -6,7 +6,7 @@ A simple mod for Minecraft that adds some QoL features.
 ![Game Version](https://img.shields.io/badge/Minecraft-1.21.8-blue)
 ![Mod Loader](https://img.shields.io/badge/Loader-Fabric-orange)
 
-<img width="1951" height="714" alt="sort" src="https://github.com/user-attachments/assets/94617172-2066-4ad1-9af5-e087adf567ce" />
+<img width="1951" height="714" alt="screen-sort" src="https://github.com/user-attachments/assets/e6e202a1-6ee9-4a96-8d1f-bfd32d3755db" />
 
 ## Features
 - 📦 Sort chests and inventory with a single button
