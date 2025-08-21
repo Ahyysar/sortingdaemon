@@ -1,9 +1,9 @@
 {
 	"schemaVersion": 1,
 	"id": "sortingdaemon",
-	"version": "0.1",
+	"version": "0.1.4",
 	"name": "Sorting Daemon",
-	"description": "A simple sorting mod for Minecraft.",
+	"description": "A simple QoL mod for Minecraft.",
 	"authors": [
 		"Ahyysar"
 	],

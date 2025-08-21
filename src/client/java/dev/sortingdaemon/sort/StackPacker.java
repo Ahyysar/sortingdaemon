@@ -9,34 +9,37 @@ import java.util.UUID;
 import net.minecraft.item.ItemStack;
 
 /**
- * Сливает совместимые стаки (Item + компоненты/NBT) до maxCount.
- * Возвращает компактный список без пустых ячеек.
+ * Merges compatible stacks (same item + same components/NBT) up to maxCount.
+ * Produces a compact list without empty slots.
  */
 public class StackPacker {
+    // Packs a list of stacks into the smallest possible set of merged stacks
     public static List<ItemStack> pack(List<ItemStack> src) {
         Map<String, ItemStack> buckets = new LinkedHashMap<>();
 
         for (ItemStack st : src) {
             if (st.isEmpty()) continue;
 
-            // Ключ: предмет + компоненты (NBT), чтобы не смешивать разные зачары/имена и т.п.
+            // Key includes item type and components to preserve differences like enchantments/names
             String key = st.getItem().toString() + "|" + st.getComponents().toString();
 
             ItemStack acc = buckets.get(key);
             if (acc == null) {
+                // First occurrence: add copy as new bucket
                 buckets.put(key, st.copy());
                 continue;
             }
 
+            // Try to merge into existing bucket
             int room = acc.getMaxCount() - acc.getCount();
             int move = Math.min(room, st.getCount());
             if (move > 0) acc.increment(move);
 
+            // If leftover remains, create a separate bucket with unique key
             int left = st.getCount() - move;
             if (left > 0) {
                 ItemStack extra = st.copy();
                 extra.setCount(left);
-                // создаём отдельную «корзину» для остатка
                 buckets.put(key + "#" + UUID.randomUUID(), extra);
             }
         }

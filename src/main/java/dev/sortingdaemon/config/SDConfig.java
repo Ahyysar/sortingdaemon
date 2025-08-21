@@ -12,34 +12,41 @@ import com.google.gson.GsonBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class SDConfig {
+    // Shared Gson instance with pretty-printing
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final String FILE_NAME = "sortingdaemon.json";
+
+    // Singleton instance
     private static SDConfig INSTANCE;
 
+    // Drag-to-drop feature settings
     public DragToDrop dragToDrop = new DragToDrop();
 
     public static class DragToDrop {
-        public boolean enabled = true;        // фича включена
-        public boolean requireShift = true;   // требовать Shift
-        public int mouseButton = 0;           // 0 = ЛКМ (на будущее)
+        public boolean enabled = true;        // Feature enabled
+        public boolean requireShift = true;   // Require Shift modifier
+        public int mouseButton = 0;           // 0 = left mouse button
     }
 
+    // Quick deposit feature settings
     public static class QuickDeposit {
         public boolean enabled = true;
         public boolean includeHotbar = true;
-        public boolean includeMain = true;      // основные 27 слотов
+        public boolean includeMain = true;      // Main 27 slots
         public boolean includeOffhand = false;
-        public boolean includeArmor = false;    // на всякий случай
+        public boolean includeArmor = false;
         public int defaultKey = 75;             // GLFW.GLFW_KEY_K
     }
     
     public QuickDeposit quickDeposit = new QuickDeposit();
 
+    // Returns the global config instance, loading if necessary
     public static SDConfig get() {
         if (INSTANCE == null) INSTANCE = load();
         return INSTANCE;
     }
 
+    // Loads config from file or creates default if missing
     private static SDConfig load() {
         try {
             Path cfgDir = FabricLoader.getInstance().getConfigDir();
@@ -54,10 +61,11 @@ public class SDConfig {
             return def;
         } catch (Exception e) {
             e.printStackTrace();
-            return new SDConfig(); // дефолт
+            return new SDConfig();  // Fallback to defaults
         }
     }
 
+    // Saves config to file
     public static void save(SDConfig cfg) {
         try {
             Path file = FabricLoader.getInstance().getConfigDir().resolve(FILE_NAME);

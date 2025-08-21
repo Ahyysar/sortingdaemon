@@ -7,27 +7,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Возвращает список индексов слотов для сортировки.
- * - Инвентарь игрока (PlayerScreenHandler): только main 9..35 (27 слотов), без хотбара 36..44,
- *   без брони 5..8, оффхенда 45 и крафта 0..4.
- * - Любой контейнер: только его собственные слоты (0..containerCount-1), без 36 слотов игрока.
+ * Resolves slot indices to be affected by sorting.
+ * - Player inventory (PlayerScreenHandler): main inventory only (9..35), excludes hotbar (36..44),
+ *   armor (5..8), offhand (45), and crafting grid (0..4).
+ * - Other containers: container slots only (0..containerCount-1), excludes the 36 player slots.
  */
 public final class InventoryRangeResolver {
 
     private InventoryRangeResolver() {}
 
+    // Returns a list of slot indices eligible for sorting for the given screen handler
     public static List<Integer> resolveSlotIndices(ScreenHandler sh) {
         int total = sh.slots.size();
 
-        // Инвентарь игрока
+        // Player inventory: include main inventory 9..35
         if (sh instanceof PlayerScreenHandler) {
             List<Integer> ids = new ArrayList<>(27);
-            // main inventory 9..35 (включительно)
             for (int i = 9; i <= 35; i++) ids.add(i);
             return ids;
         }
 
-        // Контейнер: [0..containerCount-1], потом идут 36 слотов игрока (которые не трогаем)
+        // Generic container: include only its own slots before the 36 player slots
         int containerCount = Math.max(0, total - 36);
         List<Integer> ids = new ArrayList<>(containerCount);
         for (int i = 0; i < containerCount; i++) ids.add(i);

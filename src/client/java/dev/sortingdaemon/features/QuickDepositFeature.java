@@ -13,16 +13,22 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 
+/**
+ * Implements Quick Deposit:
+ * Automatically moves items from the player inventory into a container
+ * if the container already contains at least one stack of that item type.
+ */
+
 public final class QuickDepositFeature {
     private QuickDepositFeature() {}
 
-    /** Возвращает кол-во слотов, по которым стрельнули QUICK_MOVE */
+    // Executes quick deposit into the currently open container screen.
     public static int run(MinecraftClient mc, HandledScreen<?> screen) {
         if (mc.interactionManager == null || mc.player == null) return 0;
 
         ScreenHandler sh = screen.getScreenHandler();
 
-        // 1) Собираем набор предметов, которые уже есть в КОНТЕЙНЕРЕ (не инвентарь игрока)
+        // 1) Collect item types already present in the container
         ObjectSet<Item> containerItems = new ObjectOpenHashSet<>();
         for (Slot slot : sh.slots) {
             if (!(slot.inventory instanceof PlayerInventory) && slot.hasStack()) {
@@ -31,7 +37,7 @@ public final class QuickDepositFeature {
         }
         if (containerItems.isEmpty()) return 0;
 
-        // 2) Идём по слотам ИГРОКА и шлём QUICK_MOVE для тех, что совпадают по типу
+        // 2) Iterate over player inventory slots and QUICK_MOVE matching items
         SDConfig.QuickDeposit cfg = SDConfig.get().quickDeposit;
         int moved = 0;
 
@@ -47,7 +53,7 @@ public final class QuickDepositFeature {
 
             mc.interactionManager.clickSlot(
                     sh.syncId,
-                    slot.id, // в твоих маппингах может быть index — если так, замени
+                    slot.id,
                     0,
                     SlotActionType.QUICK_MOVE,
                     mc.player
@@ -57,17 +63,18 @@ public final class QuickDepositFeature {
         return moved;
     }
 
+    // Decides whether a given player slot should be included in quick deposit
     private static boolean shouldConsiderPlayerSlot(Slot slot, SDConfig.QuickDeposit cfg) {
         if (FavoriteSlots.isFavorite(slot.getIndex())) return false;
         int i = slot.getIndex();
 
-        // хотбар 0–8
+        // Hotbar (0–8) is always ignored
         if (i >= 0 && i <= 8) {
-            return false; // <-- теперь хотбар всегда игнорируем
+            return false;
         }
-        if (i <= 35) return cfg.includeMain;     // обычный инвентарь
-        if (i <= 39) return cfg.includeArmor;    // броня
-        if (i == 40) return cfg.includeOffhand;  // вторая рука
+        if (i <= 35) return cfg.includeMain;     // main inventory
+        if (i <= 39) return cfg.includeArmor;    // armor
+        if (i == 40) return cfg.includeOffhand;  // offhand
         return true;
     }
 

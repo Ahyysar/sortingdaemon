@@ -12,27 +12,33 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+/**
+ * Renders a subtle border over favorite slots in the player's main inventory (9..35).
+ */
+
 @Mixin(HandledScreen.class)
 public abstract class FavoriteSlotsSlotOverlayMixin {
-    @Shadow protected int x; // левый край GUI
-    @Shadow protected int y; // верхний край GUI
+    @Shadow protected int x; // GUI left offset
+    @Shadow protected int y; // GUI top offset
 
+    // Draws the overlay before the vanilla slot render
     @Inject(method = "drawSlot", at = @At("HEAD"))
     private void sd$beforeDrawSlot(DrawContext ctx, Slot slot, CallbackInfo ci) {
         if (!sd$isPlayerInventorySlot(slot)) return;
 
-        // Индекс 9..35 — только инвентарь (без хотбара/брони/крафта)
-        int idx = slot.getIndex(); // если в твоих маппингах нет getIndex(), замени на slot.id
+        // Main inventory only: indices 9..35
+        int idx = slot.getIndex(); // use slot.id if mappings differ
         if (idx < 9 || idx > 35) return;
 
         if (!FavoriteSlots.isFavorite(idx)) return;
 
-        // Рисуем только рамку, тускло‑оранжевую, 90% непрозрачности
+        // Border: 18x18 around the slot; ARGB 0xE6FFD08F (~90% opacity, dim orange)
         int x1 = slot.x - 1;
         int y1 = slot.y - 1;
         ctx.drawBorder(x1, y1, 18, 18, 0xE6FFD08F);
     }
 
+    // Checks whether the slot belongs to the player's inventory
     @Unique
     private boolean sd$isPlayerInventorySlot(Slot s) {
         var mc = MinecraftClient.getInstance();

@@ -22,24 +22,30 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 
 public class SortingDaemonClient implements ClientModInitializer {
+    // Mod identifier and logger
     public static final String MODID = "sortingdaemon";
     private static final Logger LOG = LoggerFactory.getLogger(MODID);
 
-    private static KeyBinding sortKeyPrimary; // по умолчанию СКМ
-    private static KeyBinding sortKeyAlt;     // по умолчанию G
-    private static KeyBinding QUICK_DEPOSIT_KEY; // по умолчанию K
+    // Sorting keybinds (defaults: MMB and G)
+    private static KeyBinding sortKeyPrimary;
+    private static KeyBinding sortKeyAlt;
+
+    // Quick deposit keybind (default: K)
+    private static KeyBinding QUICK_DEPOSIT_KEY;
 
 
-    // edge-detect
+    // Edge-detection flags for key press events
     private static boolean primaryWasDown = false;
     private static boolean altWasDown = false;
     private static boolean quickDepositWasDown = false;
 
+    // Favorites toggle keybind (default: Z)
     public static KeyBinding FAVORITE_TOGGLE_KEY;
 
 
     @Override
     public void onInitializeClient() {
+        // Register primary sort key (mouse)
         sortKeyPrimary = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.sortingdaemon.sort.primary",
                 InputUtil.Type.MOUSE,
@@ -47,6 +53,7 @@ public class SortingDaemonClient implements ClientModInitializer {
                 "key.categories.sortingdaemon"
         ));
 
+        // Register alternate sort key (keyboard)
         sortKeyAlt = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.sortingdaemon.sort.alt",
                 InputUtil.Type.KEYSYM,
@@ -54,21 +61,21 @@ public class SortingDaemonClient implements ClientModInitializer {
                 "key.categories.sortingdaemon"
         ));
 
-        LOG.info("Primary key registered: {}", sortKeyPrimary.getBoundKeyTranslationKey());
-        LOG.info("Alt  key registered: {}", sortKeyAlt.getBoundKeyTranslationKey());
         LOG.info("SortingDaemon loaded; keybinds registered.");
-        
+
+        // Load favorite slot configuration on startup
         FavoriteSlots.load();
 
+        // Handle sort key presses at the start of each client tick
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             if (client == null) return;
 
             final long win = client.getWindow().getHandle();
 
-            // читаем назначенные клавиши (через translation key)
+            // Resolve bound keys via translation keys to respect user remaps
             final InputUtil.Key pKey = InputUtil.fromTranslationKey(sortKeyPrimary.getBoundKeyTranslationKey());
             final InputUtil.Key aKey = InputUtil.fromTranslationKey(sortKeyAlt.getBoundKeyTranslationKey());
-
+            // Edge-detect press events
             boolean primaryDownNow = isKeyDown(win, pKey);
             boolean altDownNow     = isKeyDown(win, aKey);
 
@@ -78,6 +85,7 @@ public class SortingDaemonClient implements ClientModInitializer {
             primaryWasDown = primaryDownNow;
             altWasDown     = altDownNow;
 
+            // Require a handled screen (container) to be open
             if (!(client.currentScreen instanceof HandledScreen<?> screen)) {
                 if (primaryPressed || altPressed) {
                     LOG.info("[SortingDaemon] Sort pressed but no HandledScreen open");
@@ -85,22 +93,27 @@ public class SortingDaemonClient implements ClientModInitializer {
                 return;
             }
 
-            // Блокируем креативный «каталог всех предметов»
+            // Ignore creative catalog to prevent unintended sorting
             if (screen instanceof CreativeInventoryScreen) {
                 if (primaryPressed || altPressed) {
                     LOG.info("[SortingDaemon] Ignored on CreativeInventoryScreen");
                 }
-                return; // сортировку в креативе блокируем
+                return;
             }
 
+            // Trigger sorting on press
             if (primaryPressed || altPressed) {
+                
                 var handler = screen.getScreenHandler();
+
+                // Resolve inventory slots and exclude favorites
                 List<Integer> ids = InventoryRangeResolver.resolveSlotIndices(handler);
                 ids.removeIf(FavoriteSlots::isFavorite);
 
                 LOG.info("[SortingDaemon] Triggered in {} slots={} picked={}",
                         screen.getClass().getSimpleName(), handler.slots.size(), ids.size());
-
+                
+                // Execute sort and show actionbar feedback
                 if (!ids.isEmpty()) {
                     Sorter.sortCurrent(client, handler, ids);
                     if (client.player != null) {
@@ -113,10 +126,10 @@ public class SortingDaemonClient implements ClientModInitializer {
 
         });
         
-        // создаём/загружаем конфиг при старте клиента
+        // Ensure config is loaded early
         SDConfig.get();
         
-        // Регаем хоткей (K по умолчанию)
+        // Register quick deposit key (default K or config override)
         QUICK_DEPOSIT_KEY = KeyBindingHelper.registerKeyBinding(new KeyBinding(
             "key.sortingdaemon.quick_deposit",
             SDConfig.get().quickDeposit.defaultKey != 0 ? SDConfig.get().quickDeposit.defaultKey : GLFW.GLFW_KEY_K,
@@ -124,18 +137,21 @@ public class SortingDaemonClient implements ClientModInitializer {
             
         ));
 
+        // Handle quick deposit at the end of each client tick
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (client.player == null) return;
 
-            // читаем привязанную клавишу K (или что выбрано в настройках)
+            if (client.player == null) return;
             final long win = client.getWindow().getHandle();
+
+            // Edge-detect quick deposit press
             var qKey = InputUtil.fromTranslationKey(QUICK_DEPOSIT_KEY.getBoundKeyTranslationKey());
             boolean down = isKeyDown(win, qKey);
-            boolean pressed = down && !quickDepositWasDown; // edge-detect
+            boolean pressed = down && !quickDepositWasDown;
             quickDepositWasDown = down;
 
             if (!pressed) return;
 
+            // Run quick deposit only on handled screens
             Screen s = client.currentScreen;
             if (s instanceof HandledScreen<?> hs) {
                 if (SDConfig.get().quickDeposit.enabled) {
@@ -149,15 +165,17 @@ public class SortingDaemonClient implements ClientModInitializer {
             }
         });
 
+        // Register favorites toggle keybind
         FAVORITE_TOGGLE_KEY = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-            "key.sortingdaemon.fav_toggle",  // id для lang файла
+            "key.sortingdaemon.fav_toggle",
             InputUtil.Type.KEYSYM,
-            GLFW.GLFW_KEY_Z,                 // дефолт — клавиша Z
+            GLFW.GLFW_KEY_Z,
             "key.categories.sortingdaemon"
         ));
 
     }
 
+    // Polls GLFW for the current state of a mapped key or mouse button
     private static boolean isKeyDown(long win, InputUtil.Key key) {
         return switch (key.getCategory()) {
             case MOUSE -> GLFW.glfwGetMouseButton(win, key.getCode()) == GLFW.GLFW_PRESS;
