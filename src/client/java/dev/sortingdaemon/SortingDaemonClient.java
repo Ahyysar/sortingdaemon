@@ -21,7 +21,13 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 
+/**
+ * Main client initializer for SortingDaemon.
+ * Registers keybinds, event handlers, and integrates features.
+ */
+
 public class SortingDaemonClient implements ClientModInitializer {
+
     // Mod identifier and logger
     public static final String MODID = "sortingdaemon";
     private static final Logger LOG = LoggerFactory.getLogger(MODID);
@@ -106,9 +112,13 @@ public class SortingDaemonClient implements ClientModInitializer {
                 
                 var handler = screen.getScreenHandler();
 
-                // Resolve inventory slots and exclude favorites
+                // Exclude only player inventory slots (check player index 0..40, not screen slot id)
                 List<Integer> ids = InventoryRangeResolver.resolveSlotIndices(handler);
-                ids.removeIf(FavoriteSlots::isFavorite);
+                ids.removeIf(i -> {
+                    var s = handler.slots.get(i);
+                    return (s.inventory instanceof net.minecraft.entity.player.PlayerInventory)
+                            && FavoriteSlots.isFavorite(s.getIndex());
+                });
 
                 LOG.info("[SortingDaemon] Triggered in {} slots={} picked={}",
                         screen.getClass().getSimpleName(), handler.slots.size(), ids.size());

@@ -28,7 +28,7 @@ public final class QuickDepositFeature {
 
         ScreenHandler sh = screen.getScreenHandler();
 
-        // 1) Collect item types already present in the container
+        // Collect item types already present in the container
         ObjectSet<Item> containerItems = new ObjectOpenHashSet<>();
         for (Slot slot : sh.slots) {
             if (!(slot.inventory instanceof PlayerInventory) && slot.hasStack()) {
@@ -37,7 +37,7 @@ public final class QuickDepositFeature {
         }
         if (containerItems.isEmpty()) return 0;
 
-        // 2) Iterate over player inventory slots and QUICK_MOVE matching items
+        // Iterate over player inventory slots and QUICK_MOVE matching items
         SDConfig.QuickDeposit cfg = SDConfig.get().quickDeposit;
         int moved = 0;
 
@@ -65,17 +65,23 @@ public final class QuickDepositFeature {
 
     // Decides whether a given player slot should be included in quick deposit
     private static boolean shouldConsiderPlayerSlot(Slot slot, SDConfig.QuickDeposit cfg) {
-        if (FavoriteSlots.isFavorite(slot.getIndex())) return false;
+        // Exclude only favorite slots in the player's main inventory
+        if (FavoriteSlots.isPlayerInventoryFavorite(slot, MinecraftClient.getInstance().player)) {
+            return false;
+        }
+
         int i = slot.getIndex();
 
         // Hotbar (0–8) is always ignored
-        if (i >= 0 && i <= 8) {
+        if (i >= 0 && i <= PlayerInventory.getHotbarSize() - 1) {
             return false;
         }
+
         if (i <= 35) return cfg.includeMain;     // main inventory
         if (i <= 39) return cfg.includeArmor;    // armor
         if (i == 40) return cfg.includeOffhand;  // offhand
         return true;
     }
+
 
 }

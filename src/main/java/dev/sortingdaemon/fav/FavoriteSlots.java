@@ -13,13 +13,49 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.screen.slot.Slot;
+
+/**
+ * Manages favorite slots in the player inventory.
+ * Favorites are stored as a BitSet and persisted in a JSON file.
+ */
 
 public final class FavoriteSlots {
+
+    // Checks if a given slot is marked as favorite in the player's main inventory
+    public static boolean isPlayerInventoryFavorite(Slot slot, PlayerEntity player) {
+        if (slot == null || player == null) return false;
+        if (slot.inventory != player.getInventory()) return false;
+
+        int idx     = slot.getIndex();                  // or slot.id in some mappings
+        int hotbar  = PlayerInventory.getHotbarSize();  // usually 9
+        int total   = player.getInventory().size();     // usually 36
+        int mainCnt = total - hotbar;                   // usually 27
+
+        boolean inMain = idx >= hotbar && idx < hotbar + mainCnt;
+        return inMain && isFavorite(idx);
+    }
+
+    // Checks if a given slot belongs to the player's main inventory (excluding hotbar/armor/offhand)
+    public static boolean isPlayerInventoryMainSlot(Slot slot, PlayerEntity player) {
+        if (slot == null || player == null) return false;
+        if (slot.inventory != player.getInventory()) return false;
+
+        int idx    = slot.getIndex();                   // or slot.id in some mappings
+        int hotbar = PlayerInventory.getHotbarSize();   // usually 9
+        int total  = player.getInventory().size();      // usually 36
+        int mainCnt = total - hotbar;                   // usually 27
+
+        return idx >= hotbar && idx < hotbar + mainCnt;
+    }
+
+
     // Config filename in the Fabric config directory
     private static final String FILE = "sortingdaemon_favorites.json";
 
-    // Tracks favorite player-inventory slots using vanilla indices 0..40
-    // Player inventory range: 9..35 (27 slots)
+    // Stores favorite state for vanilla indices 0..40 (27 usable slots in 9..35)
     private static final BitSet FAVORITES = new BitSet(41);
 
     private FavoriteSlots() {}

@@ -1,5 +1,13 @@
 package dev.sortingdaemon.mixins;
 
+import org.lwjgl.glfw.GLFW;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
 import dev.sortingdaemon.SortingDaemonClient;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -8,13 +16,6 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
-import org.lwjgl.glfw.GLFW;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
  * Allows toggling favorite state of player inventory slots with a hotkey.
@@ -65,23 +66,21 @@ public abstract class FavoriteSlotsMixin extends Screen {
         // Convert raw mouse position to scaled GUI coordinates
         double mx = mc.mouse.getX() * mc.getWindow().getScaledWidth()  / (double) mc.getWindow().getWidth();
         double my = mc.mouse.getY() * mc.getWindow().getScaledHeight() / (double) mc.getWindow().getHeight();
+
         Slot slot = getSlotAt(mx, my);
-        if (slot == null) return;
+        if (!dev.sortingdaemon.fav.FavoriteSlots.isPlayerInventoryMainSlot(slot, mc.player)) return;
 
-        // Only allow toggling in player inventory slots
-        if (!(slot.inventory == mc.player.getInventory())) return;
-        int idx = slot.getIndex(); // use slot.id if mappings differ
-        if (idx < 9 || idx > 35) return;
-
-        // Toggle favorite state and send feedback
+        int idx = slot.getIndex(); // Need for toggle
         boolean ok = dev.sortingdaemon.fav.FavoriteSlots.toggleFavorite(idx);
         if (ok) {
             mc.player.sendMessage(Text.translatable(
                 dev.sortingdaemon.fav.FavoriteSlots.isFavorite(idx)
-                        ? "sortingdaemon.fav.added"
-                        : "sortingdaemon.fav.removed"
+                    ? "sortingdaemon.fav.added"
+                    : "sortingdaemon.fav.removed"
             ), true);
         }
+
+
     }
 
 }
