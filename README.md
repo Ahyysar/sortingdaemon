@@ -13,13 +13,13 @@ A simple mod for Minecraft that adds some QoL features.
   <img width="1951" height="714" alt="screen-sort-min" src="https://github.com/user-attachments/assets/4d0e8984-b3c7-4085-a2e5-74c03779ac00" />
 - 🖱️ **Drag to drop** — hold **Shift + LMB** and drag across slots → items are transferred just like with Shift+Click, but without spamming clicks
 
-  ![min-drag-to-drop](https://github.com/user-attachments/assets/9ea44eb6-5555-448a-80ee-839de1bab827)
+  ![drag to drop (1)](https://github.com/user-attachments/assets/ba5dfa35-aa31-4207-9cd7-d17dea9bdd86)
 - 📥 **Quick deposit** — move matching items from your inventory into the opened container
 
-  ![min-quick-deposit-and-sort](https://github.com/user-attachments/assets/aee100e5-984b-4b64-9f04-9c50d117bff5)
+  ![quick deposit (1)](https://github.com/user-attachments/assets/6d469941-c251-4f00-801e-b5a5f8668567)
 - ⭐ **Favorite Slots** — mark specific slots in your inventory as *favorite* so they won’t be sorted or quick-deposited, keeping your essentials safe
 
-  ![min-favorite-slots-and-quick-deposit](https://github.com/user-attachments/assets/7042ad26-ff0b-4d9f-a1dc-94846d9d45d1)
+  ![favorite slots (1)](https://github.com/user-attachments/assets/135c6db9-d21c-468a-8bf2-351a8b5536b3)
 - ⌨️ Set up key binds for yourself
 - ⚙️ Easy installation (just drop it into `mods/`)
 
