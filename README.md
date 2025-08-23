@@ -8,6 +8,9 @@ A simple mod for Minecraft that adds some QoL features.
 
 ![main-banner-min](https://github.com/user-attachments/assets/07251739-9497-4af3-a3ef-4876782e34d8)
 
+# About
+This lightweight mod focuses on making inventory management in Minecraft faster and more convenient, without changing the core vanilla experience. Simple, intuitive tools that save time and keep gameplay smooth, while staying compatible with other mods.
+
 # Features
 - 📦 Sort chests and inventory with a single button
   <img width="1951" height="714" alt="screen-sort-min" src="https://github.com/user-attachments/assets/4d0e8984-b3c7-4085-a2e5-74c03779ac00" />
