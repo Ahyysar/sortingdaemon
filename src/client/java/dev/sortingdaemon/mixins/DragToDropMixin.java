@@ -25,41 +25,55 @@ import net.minecraft.text.Text;
 /**
  * Drag-to-drop: Shift + LMB + drag across slots -> QUICK_MOVE (как Shift+Click).
  */
+
 @Mixin(HandledScreen.class)
 public abstract class DragToDropMixin extends Screen {
     protected DragToDropMixin(Text title) { super(title); }
 
     @Shadow protected abstract Slot getSlotAt(double x, double y);
     @Shadow protected abstract ScreenHandler getScreenHandler();
-
-    @Unique private boolean sd$dragActive = false;
-    @Unique private final IntSet sd$processed = new IntOpenHashSet();
+    @Shadow protected int x;    // GUI left offset
+    @Shadow protected int y;    // GUI top offset
+    
+    
+    @Unique private boolean sd$dragActive = false;                      // drag mode flag
+    @Unique private final IntSet sd$processed = new IntOpenHashSet();   // anti-duplicate set
 
     // Click: enable drag mode and try to quick-move the slot under cursor
     @Inject(method = "mouseClicked", at = @At("HEAD"), cancellable = true)
     private void sd$mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
+        
         if (button != 0 || !hasShiftDown()) return;
 
         sd$dragActive = true;
         sd$processed.clear();
 
-        Slot slot = getSlotAt(mouseX, mouseY);
+        Slot slot;
+        if ((Object)this instanceof CreativeInventoryScreen) {
+            slot = sd$getSlotAtCreative(mouseX, mouseY);
+        } else {
+            slot = getSlotAt(mouseX, mouseY);
+        }
+
         if (slot == null) return;
 
-        // Consume vanilla only if a transfer actually happened
-        if (sd$quickMove(slot)) {
-            cir.setReturnValue(true);
-        }
-        // If no transfer happened, let vanilla handle Shift+Click (useful in Creative)
+        // Intentionally not consuming vanilla here to allow fallback behavior in Creative
+
     }
 
     // Dragged: while holding Shift + LMB, quick-move slots under cursor
     @Inject(method = "mouseDragged", at = @At("HEAD"), cancellable = true)
     private void sd$mouseDragged(double mouseX, double mouseY, int button, double dx, double dy, CallbackInfoReturnable<Boolean> cir) {
-        if (!sd$dragActive || button != 0) return;
+        
+        if (!sd$dragActive) return;
         if (!hasShiftDown()) { sd$stop(); return; }
 
-        Slot slot = getSlotAt(mouseX, mouseY);
+        Slot slot;
+        if ((Object)this instanceof CreativeInventoryScreen) {
+            slot = sd$getSlotAtCreative(mouseX, mouseY);
+        } else {
+            slot = getSlotAt(mouseX, mouseY);
+        }
         
         if (slot != null && sd$quickMove(slot)) {
             // Consume vanilla only on successful transfer
@@ -96,14 +110,10 @@ public abstract class DragToDropMixin extends Screen {
 
         if (isCreative) {
 
-            // Ignore Creative catalog slots; operate only on the real player inventory
-            if (slot.getClass().getName().equals("net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen$CreativeSlot")) {
-                return false;
-            }
+            // Only operate on player inventory slots in Creative
+            if (!(slot.inventory instanceof PlayerInventory)) return false;
 
-            if (slot.inventory != mc.player.getInventory()) return false;
-
-            // Anti-duplicate key based on player inventory index (not screen slot id)
+            // Use player inventory index as dedupe key
             int processedKey = 1_000_000 + slot.getIndex();
             if (!sd$processed.add(processedKey)) return false;
 
@@ -112,13 +122,14 @@ public abstract class DragToDropMixin extends Screen {
                 sd$processed.remove(processedKey);
                 return false;
             }
+
             return true;
         }
 
-        // Non-Creative: standard QUICK_MOVE
+        // Non-Creative path
         if (!slot.hasStack()) return false;
 
-        // Obtain screenHandler slot id (fallback to lookup if field name differs)
+        // Resolve screen handler slot id
         int slotId;
         try {
             slotId = slot.id; // Yarn: id
@@ -152,16 +163,25 @@ public abstract class DragToDropMixin extends Screen {
     }
 
     /**
-     * Creative-mode QUICK_MOVE analogue.
-     * - From hotbar (0..8) -> to main (9..35)
-     * - From main (9..35) -> to hotbar (0..8)
-     * 1) Merge into compatible stacks
-     * 2) Otherwise place into the first empty slot
+     * Creative analogue of QUICK_MOVE.
+     * 1) Merge into compatible stacks within the target range.
+     * 2) Otherwise place into the first empty slot.
      */
+
     @Unique
     private boolean sd$creativeQuickMove(MinecraftClient mc, Slot slot) {
         PlayerInventory pinv = mc.player.getInventory();
-        int invIdx = slot.getIndex();
+
+        // Resolve player inventory index by identity match
+        int invIdx = -1;
+        for (int i = 0; i < pinv.size(); i++) {
+            if (pinv.getStack(i) == slot.getStack()) {
+                invIdx = i;
+                break;
+            }
+        }
+        if (invIdx == -1) return false;
+
         if (invIdx < 0 || invIdx >= pinv.size()) return false;
 
         ItemStack src = pinv.getStack(invIdx);
@@ -205,7 +225,7 @@ public abstract class DragToDropMixin extends Screen {
             }
         }
 
-        // If fully merged, clear the source and exit
+        // Clear source if fully merged
         if (remaining <= 0) {
             int srcNet = sd$toCreativeNetSlot(invIdx);
             var nc = mc.getNetworkHandler();
@@ -246,7 +266,7 @@ public abstract class DragToDropMixin extends Screen {
     private static boolean sd$canCombine(ItemStack a, ItemStack b) {
         if (a == null || b == null || a.isEmpty() || b.isEmpty()) return false;
 
-        // Try ItemStack.canCombine(a, b) if available in current mappings
+        // Prefer ItemStack.canCombine if present
         try {
             var m = ItemStack.class.getDeclaredMethod("canCombine", ItemStack.class, ItemStack.class);
             Object r = m.invoke(null, a, b);
@@ -271,10 +291,44 @@ public abstract class DragToDropMixin extends Screen {
                 Object r = areShareTagsEqual.invoke(null, a, b);
                 if (r instanceof Boolean) return (Boolean) r;
             } catch (Throwable ignored2) {
-                // Fallback: treat as compatible by item only
-                return true;
+                return true; // fallback: item-only match
             }
         }
         return true;
+    }
+
+    @Unique
+    private Slot sd$getSlotAtCreative(double mouseX, double mouseY) {
+        if (!((Object)this instanceof CreativeInventoryScreen creative)) return null;
+
+        // Only active on the inventory tab (selectedTab == 0)
+        int selectedTab = 0;
+        try {
+            var field = CreativeInventoryScreen.class.getDeclaredField("selectedTab");
+            field.setAccessible(true);
+            selectedTab = field.getInt(creative);
+        } catch (Throwable t) {
+            selectedTab = 0;
+        }
+        if (selectedTab != 0) return null;
+
+        // Convert global mouse coords to GUI-relative coords
+        int guiLeft = this.x;
+        int guiTop = this.y;
+        double relX = mouseX - guiLeft;
+        double relY = mouseY - guiTop;
+
+        ScreenHandler handler = getScreenHandler();
+        
+        // Hit-test only player inventory slots
+        for (Slot slot : handler.slots) {
+        if (!(slot.inventory instanceof PlayerInventory)) continue;
+        int x = slot.x;
+        int y = slot.y;
+        if (relX >= x && relX < x + 16 && relY >= y && relY < y + 16) {
+            return slot;
+        }
+    }
+        return null;
     }
 }
