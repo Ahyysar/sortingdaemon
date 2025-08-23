@@ -20,6 +20,18 @@ public final class InventoryRangeResolver {
     public static List<Integer> resolveSlotIndices(ScreenHandler sh) {
         int total = sh.slots.size();
 
+        // Creative: restrict to player main inventory (9..35) and filter by PlayerInventory owner
+        if (sh.getClass().getName().contains("Creative")) {
+            List<Integer> ids = new ArrayList<>();
+            for (int i = 9; i <= 35; i++) {
+                var slot = sh.slots.get(i);
+                if (slot.inventory instanceof net.minecraft.entity.player.PlayerInventory) {
+                    ids.add(i);
+                }
+            }
+            return ids;
+        }
+
         // Player inventory: include main inventory 9..35
         if (sh instanceof PlayerScreenHandler) {
             List<Integer> ids = new ArrayList<>(27);

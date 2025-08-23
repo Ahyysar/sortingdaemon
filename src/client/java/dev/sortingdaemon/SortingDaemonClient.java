@@ -99,12 +99,28 @@ public class SortingDaemonClient implements ClientModInitializer {
                 return;
             }
 
-            // Ignore creative catalog to prevent unintended sorting
+            // Creative: allow sorting only on the player inventory tab
             if (screen instanceof CreativeInventoryScreen) {
-                if (primaryPressed || altPressed) {
-                    LOG.info("[SortingDaemon] Ignored on CreativeInventoryScreen");
+                try {
+                    var selectedTabField = CreativeInventoryScreen.class.getDeclaredField("selectedTab");
+                    selectedTabField.setAccessible(true);
+                    Object selectedTab = selectedTabField.get(screen);
+
+                    var displayNameField = selectedTab.getClass().getDeclaredField("displayName");
+                    displayNameField.setAccessible(true);
+                    Object displayName = displayNameField.get(selectedTab);
+                    String displayNameStr = displayName.toString();
+
+                    // Skip non-inventory tabs
+                    if (!displayNameStr.contains("itemGroup.inventory")) {
+                        // LOG.info("[SortingDaemon] Ignored on Creative tab (not inventory)");
+                        return;
+                    }
+                } catch (Throwable t) {
+                    // Fail-safe: block sorting if tab detection fails
+                    LOG.info("[SortingDaemon] Exception while checking Creative tab: {}", t.toString());
+                    return;
                 }
-                return;
             }
 
             // Trigger sorting on press
