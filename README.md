@@ -41,11 +41,10 @@ This lightweight mod focuses on making inventory management in Minecraft faster 
 4. Launch the game.
 
 ## How to use it
-- Open your inventory and press the assigned sorting key (primary or alternative).
 - Open any container (e.g. a chest) and press the sorting key to tidy it up.
 - Drag to drop — hold down **Shift + LMB** on the slots to quickly transfer items between containers.  
-- Quick Deposit — press assigned key while a container is open to move matching items into it.  
-- Favorite Slots — hover over a slot and press **Ctrl + Z** to mark/unmark it as favorite.  
+- Quick deposit — press assigned key while a container is open to move matching items into it.  
+- Favorite slots — hover over a slot and press **Ctrl + Z** to mark/unmark it as favorite.  
   - Favorite slots will not be affected by sorting or quick deposit.
 - You can change keybinds in **Options → Controls → Key Binds**.
 
