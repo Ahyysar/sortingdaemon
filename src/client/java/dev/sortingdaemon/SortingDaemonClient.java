@@ -127,6 +127,15 @@ public class SortingDaemonClient implements ClientModInitializer {
             if (primaryPressed || altPressed) {
                 
                 var handler = screen.getScreenHandler();
+                
+                // Block sorting if player is holding an item on the cursor
+                if (handler.getCursorStack() != null && !handler.getCursorStack().isEmpty()) {
+                    LOG.info("[SortingDaemon] Sort blocked: player is holding an item with cursor");
+                    if (client.player != null) {
+                        client.player.sendMessage(Text.translatable("sortingdaemon.sorting.blocked_cursor"), true);
+                    }
+                    return;
+                }
 
                 // Exclude only player inventory slots (check player index 0..40, not screen slot id)
                 List<Integer> ids = InventoryRangeResolver.resolveSlotIndices(handler);

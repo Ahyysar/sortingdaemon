@@ -8,5 +8,6 @@
   "sortingdaemon.quick_deposit.start": "Выгрузка…",
   "sortingdaemon.fav.added": "Слот добавлен в избранное",
   "sortingdaemon.fav.removed": "Слот убран из избранного",
-  "key.sortingdaemon.fav_toggle": "Избранный слот (Ctrl + _)"
+  "key.sortingdaemon.fav_toggle": "Избранный слот (Ctrl + _)",
+  "sortingdaemon.sorting.blocked_cursor": "Нельзя сортировать, пока предмет на курсоре"
 }

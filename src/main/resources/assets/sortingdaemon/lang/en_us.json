@@ -8,8 +8,8 @@
   "sortingdaemon.quick_deposit.start": "Deposit…",
   "sortingdaemon.fav.added": "Slot marked as favorite",
   "sortingdaemon.fav.removed": "Slot unmarked",
-  "key.sortingdaemon.fav_toggle": "Toggle favorite slot (Ctrl + _)"
-
+  "key.sortingdaemon.fav_toggle": "Toggle favorite slot (Ctrl + _)",
+  "sortingdaemon.sorting.blocked_cursor": "Cannot sort while holding an item with the cursor"
   
 }
 
