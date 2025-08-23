@@ -20,7 +20,7 @@ This lightweight mod focuses on making inventory management in Minecraft faster 
 - 📥 **Quick deposit** — move matching items from your inventory into the opened container
 
   ![quick deposit (1)](https://github.com/user-attachments/assets/6d469941-c251-4f00-801e-b5a5f8668567)
-- ⭐ **Favorite Slots** — mark specific slots in your inventory as favorite so they won’t be sorted or quick-deposited, keeping your essentials safe
+- ⭐ **Favorite slots** — mark specific slots in your inventory as favorite so they won’t be sorted or quick-deposited, keeping your essentials safe
 
   ![favorite slots (1)](https://github.com/user-attachments/assets/135c6db9-d21c-468a-8bf2-351a8b5536b3)
 - ⌨️ Set up key binds for yourself
