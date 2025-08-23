@@ -58,10 +58,6 @@ This lightweight mod focuses on making inventory management in Minecraft faster 
 | Quick deposit     | **K**            |
 | Mark  as favorite | **Ctrl + Z**     |
 
-## Compatibility
-- Works in **Survival** and **Adventure** modes.
-- In **Creative Mode**, the player's inventory cannot be sorted. ⚠️
-
 ## Building from source
 ```bash
 # Clone and build
