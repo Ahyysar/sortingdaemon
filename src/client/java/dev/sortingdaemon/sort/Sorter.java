@@ -10,7 +10,8 @@ import net.minecraft.block.Blocks;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.component.DataComponentTypes;
 
-
+import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
+import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
 
 import java.util.*;
 
@@ -107,6 +108,27 @@ public class Sorter {
     public static void sortCurrent(MinecraftClient client, ScreenHandler sh, List<Integer> slotIds) {
         if (client == null || client.player == null || client.interactionManager == null) return;
         if (slotIds == null || slotIds.size() <= 1) return;
+
+        // Creative mode safe sort
+        if (client.currentScreen instanceof CreativeInventoryScreen) {
+            // Copy target stacks
+            List<ItemStack> stacks = new ArrayList<>();
+            for (int i : slotIds) {
+                stacks.add(sh.slots.get(i).getStack().copy());
+            }
+
+            // Local sort (no clicks)
+            stacks.sort(STACK_COMPARATOR);
+
+            // Apply via network packets and update locally
+            for (int idx = 0; idx < slotIds.size(); idx++) {
+                int slot = slotIds.get(idx);
+                ItemStack newStack = stacks.get(idx);
+                client.player.networkHandler.sendPacket(new CreativeInventoryActionC2SPacket(slot, newStack));
+                sh.slots.get(slot).setStack(newStack.copy());
+            }
+            return;
+        }
 
         // 1) Merge compatible stacks
         mergeStacks(client, sh, slotIds);
