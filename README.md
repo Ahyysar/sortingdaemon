@@ -6,7 +6,7 @@ A simple mod for Minecraft that adds some QoL features.
 ![Game Version](https://img.shields.io/badge/Minecraft-1.21.8-blue)
 ![Mod Loader](https://img.shields.io/badge/Loader-Fabric-orange)
 
-![main-banner-2-min](https://github.com/user-attachments/assets/46eead85-3356-4175-a11f-21bf385f9fa3)
+<img width="2265" height="1274" alt="main-banner-2-min" src="https://github.com/user-attachments/assets/0ea1e3ee-1b29-413f-86ec-cf3859c9f721" />
 
 # About
 This lightweight mod focuses on making inventory management in Minecraft faster and more convenient, without changing the core vanilla experience. Simple, intuitive tools that save time and keep gameplay smooth, while staying compatible with other mods.
