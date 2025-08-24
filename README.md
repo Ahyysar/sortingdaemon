@@ -40,8 +40,7 @@ Sorting Daemon is a lightweight mod that focuses on making inventory management 
 - Open any container (e.g. a chest) and press the sorting key to tidy it up.
 - Drag to drop — hold down **Shift + LMB** on the slots to quickly transfer items between containers.  
 - Quick deposit — press assigned key while a container is open to move matching items into it.  
-- Favorite slots — hover over a slot and press **Ctrl + Z** to mark/unmark it as favorite.  
-  - Favorite slots will not be affected by sorting or quick deposit.
+- Favorite slots — hover over a slot and press **Ctrl + Z** to mark/unmark it as favorite. Favorite slots will not be affected by sorting or quick deposit.
 - You can change keybinds in **Options → Controls → Key Binds**.
 
 ## Keybinds
