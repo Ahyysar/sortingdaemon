@@ -5,12 +5,12 @@
 ![Mod Loader](https://img.shields.io/badge/Loader-Fabric-orange)
 
 # About
-Sorting Daemon is a lightweight mod that focuses on making inventory management in Minecraft faster and more convenient, without changing the core vanilla experience. It provides simple, intuitive tools that save time and keep gameplay smooth, while staying compatible with other mods.
+  Sorting Daemon is a lightweight mod that focuses on making inventory management in Minecraft faster and more convenient, without changing the core vanilla experience. It provides simple, intuitive tools that save time and keep gameplay smooth, while staying compatible with other mods.
 
 # Features
 - 📦 Sort chests and inventory with a single button
   <img width="1951" height="714" alt="screen-sort-min" src="https://github.com/user-attachments/assets/4d0e8984-b3c7-4085-a2e5-74c03779ac00" />
-- 🖱️ **Drag to drop** — hold **Shift + LMB** and drag across slots → items are transferred just like with *Shift + Click*, but without spamming
+- 🖱️ **Drag to drop** — hold *Shift + LMB* and drag across slots → items are transferred just like with *Shift + Click*, but without spamming
 
   ![drag to drop (1)](https://github.com/user-attachments/assets/ba5dfa35-aa31-4207-9cd7-d17dea9bdd86)
 - 📥 **Quick deposit** — move matching items from your inventory into the opened container
@@ -38,9 +38,9 @@ Sorting Daemon is a lightweight mod that focuses on making inventory management 
 
 ## How to use it
 - Open any container (e.g. a chest) and press the sorting key to tidy it up.
-- Drag to drop — hold down **Shift + LMB** on the slots to quickly transfer items between containers.  
+- Drag to drop — hold down *Shift + LMB* on the slots to quickly transfer items between containers.  
 - Quick deposit — press assigned key while a container is open to move matching items into it.  
-- Favorite slots — hover over a slot and press **Ctrl + Z** to mark/unmark it as favorite. Favorite slots will not be affected by sorting or quick deposit.
+- Favorite slots — hover over a slot and press *Ctrl + Z* to mark/unmark it as favorite. Favorite slots will not be affected by sorting or quick deposit.
 - You can change keybinds in **Options → Controls → Key Binds**.
 
 ## Keybinds
