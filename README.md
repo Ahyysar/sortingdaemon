@@ -1,15 +1,11 @@
-# Sorting Daemon
-
-A simple mod for Minecraft that adds some QoL features.
+<img width="4094" height="1023" alt="banner-2-min" src="https://github.com/user-attachments/assets/a7bcf539-34e4-4739-9c44-0cd2a90d06c3" />
 
 ![License](https://img.shields.io/badge/license-CC0--1.0-lightgrey)
 ![Game Version](https://img.shields.io/badge/Minecraft-1.21.8-blue)
 ![Mod Loader](https://img.shields.io/badge/Loader-Fabric-orange)
 
-<img width="2265" height="1274" alt="main-banner-2-min" src="https://github.com/user-attachments/assets/0ea1e3ee-1b29-413f-86ec-cf3859c9f721" />
-
 # About
-This lightweight mod focuses on making inventory management in Minecraft faster and more convenient, without changing the core vanilla experience. Simple, intuitive tools that save time and keep gameplay smooth, while staying compatible with other mods.
+Sorting Daemon is a lightweight mod that focuses on making inventory management in Minecraft faster and more convenient, without changing the core vanilla experience. It provides simple, intuitive tools that save time and keep gameplay smooth, while staying compatible with other mods.
 
 # Features
 - 📦 Sort chests and inventory with a single button
