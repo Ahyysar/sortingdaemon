@@ -1,6 +1,6 @@
 <img width="4094" height="1023" alt="banner-2-min" src="https://github.com/user-attachments/assets/a7bcf539-34e4-4739-9c44-0cd2a90d06c3" />
 
-![License](https://img.shields.io/badge/license-CC0--1.0-lightgrey)
+![License](https://img.shields.io/badge/license-MIT-green)
 ![Game Version](https://img.shields.io/badge/Minecraft-1.21.8-blue)
 ![Mod Loader](https://img.shields.io/badge/Loader-Fabric-orange)
 
@@ -63,4 +63,5 @@ cd sortingdaemon
 
 ## License
 
-This project is available under the CC0 license. Feel free to use the code, modify it, or include it in your own projects.
+This project is licensed under the **MIT License**.  
+See the [LICENSE](LICENSE) file for details.
