@@ -1,4 +1,4 @@
-<img width="4094" height="1023" alt="banner-2-min" src="https://github.com/user-attachments/assets/a7bcf539-34e4-4739-9c44-0cd2a90d06c3" />
+![new-banner-main-resize](https://github.com/user-attachments/assets/310436fe-5f74-41dc-bb27-1d8f54c5e730)
 
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Game Version](https://img.shields.io/badge/Minecraft-1.21.8-blue)
