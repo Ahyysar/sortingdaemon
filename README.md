@@ -1,3 +1,6 @@
+# Sorting Daemon
+Essential inventory tools for Minecraft.
+
 ![new-banner-main-resize](https://github.com/user-attachments/assets/310436fe-5f74-41dc-bb27-1d8f54c5e730)
 
 ![License](https://img.shields.io/badge/license-MIT-green)
