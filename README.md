@@ -1,5 +1,5 @@
 # Sorting Daemon
-Essential inventory tools for Minecraft.
+### Essential inventory tools for Minecraft.
 
 ![new-banner-main-resize](https://github.com/user-attachments/assets/310436fe-5f74-41dc-bb27-1d8f54c5e730)
 
