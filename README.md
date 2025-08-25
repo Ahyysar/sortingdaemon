@@ -4,6 +4,10 @@
 ![Game Version](https://img.shields.io/badge/Minecraft-1.21.8-blue)
 ![Mod Loader](https://img.shields.io/badge/Loader-Fabric-orange)
 
+[CurseForge page](https://www.curseforge.com/minecraft/mc-mods/sorting-daemon)
+•
+[Modrinth page](https://modrinth.com/mod/sorting-daemon)
+
 # About
   Sorting Daemon is a lightweight mod that focuses on making inventory management in Minecraft faster and more convenient, without changing the core vanilla experience. It provides simple, intuitive tools that save time and keep gameplay smooth, while staying compatible with other mods.
 
