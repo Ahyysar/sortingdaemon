@@ -36,7 +36,7 @@
 ## Compatibility
 - Works in singleplayer (client only).
 - Works in multiplayer, but requires installation on **both client and server**.
-- ⚠️ Vanilla clients can still join a server with the mod installed, but they won’t have access to its features.
+- ⚠️ Vanilla clients can still join a server with the mod installed.
 
 ## Installation
 1. Install [Fabric Loader](https://fabricmc.net/use/installer/).  
