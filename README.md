@@ -33,8 +33,12 @@
 - Fabric Loader
 - Fabric API
 
-## Installation
+## Compatibility
+- Works in singleplayer (client only).
+- Works in multiplayer, but requires installation on **both client and server**.
+- ⚠️ Vanilla clients can still join a server with the mod installed, but they won’t have access to its features.
 
+## Installation
 1. Install [Fabric Loader](https://fabricmc.net/use/installer/).  
 2. Download and place **Fabric API** into your `mods/` folder.  
    - [Fabric API on Modrinth](https://modrinth.com/mod/fabric-api)  
