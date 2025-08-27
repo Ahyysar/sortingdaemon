@@ -40,7 +40,7 @@
    - [Fabric API on Modrinth](https://modrinth.com/mod/fabric-api)  
    - [Fabric API on CurseForge](https://www.curseforge.com/minecraft/mc-mods/fabric-api)  
 3. Download the latest release from the [Releases](../../releases) page  
-   (e.g. `sortingdaemon-0.1.5-mc1.21.8.jar`) and put it into the same `mods/` folder.
+   (e.g. `sortingdaemon-fabric-0.1.5+mc1.21.8`) and put it into the same `mods/` folder.
 4. Launch the game.
 
 ## How to use it
